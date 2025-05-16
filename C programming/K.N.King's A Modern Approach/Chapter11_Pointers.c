@@ -8,7 +8,7 @@ variable itself.
 3) Addresses cannot be stored in ordinary integer variables since their range of values isn't necessarily compatible with that of
 integer variables --> we store them in pointer variables.
 4) A pointer is C's fancy way of saying an address and pointer variables are variables capable of storing addresses.
-5) A pointer variable can only point to objects of a particular type only. This type is called the referenced type. C enfores no
+5) A pointer variable can only point to objects of a particular type only. This type is called the referenced type. C enforces no
 restrictions on what the referenced type may be. We can even make a pointer point to another pointer.
 6) Declaring a pointer variable sets aside space for it in memory but doesn't make it point to anywhere in particular. It's absolutely
 crucial that we initialize a pointer before using it, and one way of doing that for example is to assign it the address of some lvalue.
@@ -20,17 +20,17 @@ to do. It's particularly dangerous if we do that to assign a value like in this 
 example, if int i, *q; is in effect then int *p = &i and int *p = q are both legal examples of pointer assignment. In contrast, *q = *p
 is not a pointer assignment, it merely copies the value of the object that p points to into the object that q points to.
 11) Any number of different pointer variables can point to the same object.
-12) Since C passes arguments to functions by value, a variable supplied to a function as an argumrnt is protected against change. So what
-if we want a function to be able to change the value of one of its arguments? POinters offer a solution to this by passing the address
+12) Since C passes arguments to functions by value, a variable supplied to a function as an argument is protected against change. So what
+if we want a function to be able to change the value of one of its arguments? Pointers offer a solution to this by passing the address
 of a variable to the function (The address will be passed by value). If we declare the corresponding parameter to be a pointer p, *p
-will be an alias for the argument variable.
+will be an alias for the object that the argument pointer points to.
 13) Failing to pass a pointer to a function that expects one can have very bad consequences. The function itself will have no way
-of telling the value that's been copied into its pointer parameter isn't an actual address and will attempt to consume that value as
+of telling that the value that's been copied into its pointer parameter isn't an actual address, and it will attempt to consume that value as
 if it were an address.
 14) scanf is a notoriously error-prone function because failing to pass a pointer to it will usually go undetected by the compiler.
 15) Sometimes, we might pass a pointer as an argument to a function without having the intention of changing the value of the object it
 points to inside the function. The reason for using a pointer in this case might be efficiency: passing a variable that requires a large
-amount amount of storage by value will eat up a lot of time and space.
+amount of storage by value will eat up a lot of time and space.
 16) We can prevent a function from changing the value of an object that a pointer argument is pointing to by adding the const keyword
 to the corresponding parameter's declaration: void function(const int *ptr)
 17) A function can return a pointer variable. We usually return either: a pointer to an external variable, a pointer to a static local
@@ -38,13 +38,13 @@ variable or a pointer that's been passed to the function as an argument.
 18) We should never return a pointer to an automatic local variable. Such a variable will cease to exist once the function returns so
 a pointer to it will become invalid.
 19) A pointer can point to an array element: int Array[10]; int *p = &Array[5];
-20) Common source of confusion for beginners: the asterisk symbol * can mean different things depending on where it's used. In declarations
+20) A common source of confusion for beginners: the asterisk symbol * can mean different things depending on where it's used. In declarations
 like int *p; it lets the compiler know that p is a pointer variable. In a statement like *p = 5; however, it serves as the indirection
-operator. It is a unary operator that derefernces a pointer variable and gives access to the object it's pointing to.
+operator. It is a unary operator that dereferences a pointer variable and gives access to the object it's pointing to.
 21) We can print a pointer or a variable's address by using printf with the %p conversion specification.
 22) If a pointer is passed to a function as an argument, changing the pointer inside the function won't have any effect on the original
-pointer since the pointer is passed by value i.e a value of the actual address is copied into the pointer parameter.
-23) We can protect a pointer parameter against change inside a function by adding const infront of the pointer name in the declaration of the
+pointer since the pointer is passed by value i.e a copy of the actual address is stored into the pointer parameter.
+23) We can protect a pointer parameter against change inside a function by adding const in front of the pointer name in the declaration of the
 parameter: void function(int * const ptr). However, since ptr only contains a copy of the original pointer i.e the argument, there's rarely
 any reason to protect the pointer parameters against change since changing it will actually not affect the argument at all.
 24) We can protect both the object a pointer points to and the pointer itself against change when passed to a function by adding const
