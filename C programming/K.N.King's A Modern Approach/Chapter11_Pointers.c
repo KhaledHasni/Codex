@@ -69,18 +69,20 @@ yields an alias for i.
 (b) &p is not an alias for i. &p provides the address of the pointer variable p. In other words, the address in memory of the variable
 that stores the address of i.
 (c) *&p is not an alias for i. We can break this down in more than one way. &p provides the address of the pointer variable p in memory.
-Applying the indirection operator to &p gives us access to the pointer variable p itself. If we want
-to be pedantically mathematical (:p) we can think of the indirection and the address operators as 2 operators that will cancel each other
-out and leave just p. Either way we get to the same conclusion: *&p is an alias for p not for i.
-(d) &*p is not an alias for i. It's an alias for p again. (Same logic as before)
+Applying the indirection operator to &p gives us access to the pointer variable p itself. If we want to be pedantically mathematical (:p)
+we can think of the indirection and the address operators as 2 operators that will cancel each other out and leave just p. Either way we
+get to the same conclusion: *&p is an alias for p not for i.
+(d) &*p is not an alias for i. It's not an alias for p either. If we want to get really serious about our pointers here, &*p is an expression
+that will evaluate to the value stored in p but it does not represent the object p itself, therefore it's not an alias for it. One more way
+of looking at it is that & produces an rvalue while p is an lvalue. so &*p is an rvalue and therefore can't be an alias for an lvalue.
 (e) *i is not an alias for i. This use of the indirection operator is particularly dangerous. If i contains a value that corresponds to a
 valid memory address at the time of the execution of this statement, we will essentially be trying to access the value stored at that valid
 address. What could make this really dangerous is if we try to assign a value to this lvalue (*p).
 (f) &i is not an alias for i. This represents the address of i in memory.
 (g) *&i is an alias for i. &i provides the address of i in memory which essentially equates to a pointer to i. Applying the indirection
 operator to that pointer gives us access to the object the pointer is currently pointing to, which is always going to be i. We can use the
-mathematical cancelation trick as well.
-(h) &*i is an alias for i. (Same logic as before). */
+mathematical cancellation trick as well.
+(h) &*i is not alias for i. This is actually meaningless since i is a variable so applying the indirection operator to it makes no sense. */
 
 /* Exo2: */
 
@@ -91,21 +93,21 @@ mathematical cancelation trick as well.
 address of an int variable to it, that would be a problem.
 (c) &p = q; is not a legal assignment. We're trying to assign a pointer to int to a pointer to a pointer to int.
 (d) p = &q; is not a legal assignment. We're trying to assign a pointer to a pointer to int to a pointer to int.
-(e) p = *&q; is a legal assignment. *&q is an alias for q which is a pointer to int, same as p. The legality is therefore trivial. 
-(f) p = q; is a legal assignment. We're basically asking both p and q to point to the same object of type int, and this perfectly fine.
+(e) p = *&q; is a legal assignment. *&q is an alias for q which is a pointer to int, same as p. The legality is therefore trivial.
+(f) p = q; is a legal assignment. We're basically asking both p and q to point to the same object of type int, and this is perfectly fine.
 (g) p = *q; is not a legal assignment. *q is an alias for an int value to which q is currently pointing. Trying to assign that value to a
 pointer variable p is illegal.
 (h) *p = q; is not a legal assignment. *p is an alias for an int variable to which p is currently pointing. We're trying to assign a pointer
 to an int variable which is wrong.
 (i) *p = *q; is a legal assignment. Assuming both p and q have been initialized already, they are both pointing to variables of type int.
-What we're essentially doing is assigning the value contained in the variable being pointed to by q to the variable being pointed by p.
+What we're essentially doing is assigning the value contained in the variable being pointed to by q to the variable being pointed to by p.
 Once this statement is executed, p and q will be pointing to 2 variables (could be distinct depending on how they were initialized) that contain
 the same value. */
 
 /* Exo3: */
 
 /* We are given this function that should in theory compute the sum and average of numbers in a double array and asked to identify and fix
-the mistakes it contains: 
+the mistakes it contains:
 void avg_sum(double a[], int n, double *avg, double *sum)
 {
     int i;
@@ -162,21 +164,21 @@ void split_time(long total_sec, int *hr, int *min, int *sec)
 them in pointer parameters: */
 void find_two_largest(int a[], int n, int *largest, int *second_largest)
 {
-    *largest = a[0];
-    *second_largest = a[0] - 1;
+    *largest = (a[0] > a[1]) ? a[0] : a[1];
+    *second_largest = (a[0] > a[1]) ? a[1] : a[0]; 
 
-    for(int i = 1; i < n; i++) {
+    for(int i = 2; i < n; i++) {
         if(a[i] > *largest){
             *second_largest = *largest;
             *largest = a[i];
-        } else if(a[i] > *second_largest)
+        } else if(a[i] > *second_largest) //This will consider any duplicates equal to *largest as second largest
             *second_largest = a[i];
     }
 }
 
 /* Exo7: */
 
-/* We are asked to write a function that takes a day_of_year and year arguments and extracts the month and day from that and returns stores them
+/* We are asked to write a function that takes a day_of_year and year arguments and extracts the month and day from that and stores them
 in pointer parameters: */
 void split_date(int day_of_year, int year, int *month, int *day)
 {
@@ -203,7 +205,7 @@ int *find_largest(int a[], int n)
 {
     int *ptr_to_lgst = &a[0];
 
-    for(int i = 0; i < n; i++) {
+    for(int i = 1; i < n; i++) {
         if(a[i] > *ptr_to_lgst)
             ptr_to_lgst = &a[i];
     }
@@ -215,7 +217,7 @@ int *find_largest(int a[], int n)
 
 /* Project1: */
 
-/* We are asked to write a function that takes a number of dollars and split that into the smallest number of 20, 10, 5 and 1 dollar bills.
+/* We are asked to write a function that takes a number of dollars and splits that into the smallest number of 20, 10, 5 and 1 dollar bills.
 Let's try to do this without referring back to project 7 from Chapter 2 like we're being asked */
 void pay_amount(int dollars, int* twenties, int* tens, int* fives, int* ones)
 {
