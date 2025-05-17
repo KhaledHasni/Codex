@@ -213,18 +213,4 @@ int *find_largest(int a[], int n)
     return ptr_to_lgst;
 }
 
-/* Programming projetcs: */
-
-/* Project1: */
-
-/* We are asked to write a function that takes a number of dollars and splits that into the smallest number of 20, 10, 5 and 1 dollar bills.
-Let's try to do this without referring back to project 7 from Chapter 2 like we're being asked */
-void pay_amount(int dollars, int* twenties, int* tens, int* fives, int* ones)
-{
-    *twenties  = dollars / 20;
-    *tens = (dollars % 20) / 10;
-    *fives = (dollars % 10) / 5;
-    *ones = dollars % 5;
-}
-
-/* */
+/* Programming projetcs: TODO */
