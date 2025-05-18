@@ -137,18 +137,18 @@ e) The condition *p < *q is false */
 /* Exo2: */
 
 /* We are given a statement that appears to be an attempt to perform pointer arithmetic on two pointers low and high that point to elements of
-the same array in order to extract a pointer to an element of the array that sits right in the middle of them: medium = (low + high) / 2;
-We are asked to identify what makes this statement illegal in C and try to fix it.
+the same array in order to extract a pointer to an element of the array that sits right in the middle of them: medium = (low + high) / 2; with
+low, medium and high all pointer variables of the same type. We are asked to identify what makes this statement illegal in C and try to fix it.
 
 --> So what makes the statement illegal is the fact that we're trying to add 2 pointers. The only forms of pointer arithmetic that C allows are
-adding an integer to a pointer, subtracting an integer from a pointer and subtracting a pointer from a pointer. low + medium is none of those.
+adding an integer to a pointer, subtracting an integer from a pointer and subtracting a pointer from a pointer. low + high is none of those.
 What we could do however is this: medium = low + (high - low) / 2; This statement will make medium point to the element that sits in the middle
 between the ones pointed to by low and high respectively. If an odd number of elements sits in between *low and *high then medium will point
 to the element bang in the middle, otherwise it will point to the first element from among the pair of elements in the middle. */
 
 /* Exo3: */
 
-/* We are given a progral fragment where an integer array is being declared and manipulated and asked to determine what will its content be
+/* We are given a program fragment where an integer array is being declared and manipulated and asked to determine what will its content be
 at the end of the execution: */
 
 /* #define N 10
@@ -170,12 +170,12 @@ the same elements as before in a reversed order: a = {10, 9, 8, 7, 6, 5, 4, 3, 2
 
 /* Exo5: */
 
-/* We are asked to assume that we have a one-dimensional array and a pointer and that the assignment p = a; is in effect. We are then asked
+/* We are asked to assume that we have a one-dimensional array a and a pointer p and that the assignment p = a; is in effect. We are then asked
 to identify which from among a group of expressions are illegal due to a type mismatch and which from among the rest have a non zero value:
 a) p == a[0]; is illegal. We are comparing a value of type X to a pointer variable of type *X.
 b) p == &a[0]; is legal. Since p = a, this means p is now a pointer to the first element of the array a (since the array name is technically
 a pointer to its first element). Which means p is equal to &a[0]. Another way to look at this is to remember that &a[i] is equal to a+i.
-so &a[0] is equal to a+0 = a ==> since p == a then p == &a[0]. ====> This expression is true.
+so &a[0] is equal to a+0 == a ==> since p == a then p == &a[0]. ====> This expression is true.
 c) *p == a[0]; is legal. Since p = a is in effect, this means p points to a[0] which also means *p == a[0]. ====> This expression is true.
 d) p[0] == a[0]; is legal. We know that p = a. We also know that C allows pointers to be subscripted just like arrays as long as they point
 to array elements. This means p[0] is a perfectly fine use of the pointer p and it is an alias for a[0] indeed ====> This expression is true.
@@ -206,7 +206,7 @@ int sum_array(const int *ptr, int n)
 
 /* Exo7: */
 
-/* We are asked to write a function that takes 3 arguements, a constant integer array, its number of elements and an integer key value. This function
+/* We are asked to write a function that takes 3 arguments, a constant integer array, its number of elements and an integer key value. This function
 should return true if the key matches one of the elements of the array and it should return false otherwise. The only condition is to use pointer
 arithmetic and not array subscripting to step through the array. */
 bool search(const int a[], int n, int key)
@@ -223,11 +223,13 @@ bool search(const int a[], int n, int key)
 
 /* Exo8: */
 
-/* We are given a function that takes 2 arguments: an integer array and the number of its elements. This function zeroes all elements in the arrays.
+/* We are given a function that takes 2 arguments: an integer array and the number of its elements. This function zeroes all elements in the array.
 We are asked to make as few changes as possible to make the function use pointer arithmetic instead of array subscripting to step through the array:
 
 void store_zeros(int a[], int n)
 {
+    int i;
+
     for(i = 0; i < n; i++)
         a[i] = 0;
 } */
