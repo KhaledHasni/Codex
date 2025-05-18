@@ -9,7 +9,8 @@ In other words, if p is pointing to a[i] then p+j will point to a[i+j] provided 
 4) Subtracting an integer j from a pointer p pointing to an array element yields a pointer to the array element j places before the one p is
 pointing to. In other words, if p is pointing to a[i] then p-j will point to a[i-j] provided that a[i-j] exists.
 5) Subtracting a pointer from another pointer yields the signed distance measured in array elements between the two elements that both pointers are
-pointing to. In other words, if p points to a[i] and q points to a[j] then p-q is equal to i-j.
+pointing to. In other words, if p points to a[i] and q points to a[j] then p-q is equal to i-j. The type of the difference is ptrdiff_t defined in
+<stddef.h> which is a signed integer type.
 6) Performing pointer arithmetic on pointers that don't point to array elements yields undefined behaviors.
 7) The effect of subtracting one pointer from another is undefined unless they both point to elements of the same array.
 8) C allows using relational (<, <=, >, >=) and equality (==, !=) operators with pointers. Comparing pointers with the relational operators is only
@@ -73,7 +74,7 @@ to point to the first element in the row i of the 2D array a. Quick demonstratio
 36) We can use the previous simplification to write for(int *p = a[i]; p < a[i] + MAX_COLUMN; p++).
 37) We can pass a row from a 2D array to a function that expects a one-dimensional array as an argument.
 38) Stepping through a column of a 2D array is a little bit more complicated than stepping through a row because arrays are row-major-ordered. The
-way we do it is we step through the array one row at a time in each iteration of our loop and go to the element in that row corresponsing to the
+way we do it is we step through the array one row at a time in each iteration of our loop and go to the element in that row corresponding to the
 column we want to extract. So if we have a 2D array int a[MAX_ROW][MAX_COLUMN]; and an integer i and we would like to step through the i'th column
 of a, we would declare a pointer to a "row": int (*p)[MAX_COLUMN]; and write the loop in this fashion for example to set all elements of column i to 0:
 for(p = &a[0]; p < &a[MAX_ROW]; p++) {(*p)[i] = 0;}.
@@ -102,10 +103,11 @@ then p+j will add j*x to the address value stored in p. For example, if p is of 
 are usually stored over 4 bytes.
 47) Pointer arithmetic vs array subscripting in array processing is a uselss debate. Neither can be proven to be more advantageous. Learn
 both and use whichever is more natural.
-48) Suppose that we have int a[N], i = x; with x < N. Funnily enough, x[a] == a[x]. Quick demonstration: x[a] == *(x+a), this is because
-the subscripting operator is actually using pointer arithmetic under the hood. And since *(x+a) == *(a+x) because pointer addition is commutative,
-and *(a+x) == a[x], we have our result.
-49) C allows the use of array names as constant pointers, but that's not the case for array parameter names which can actually be changed.
+48) Suppose that we have int a[N], i = x; with x < N. Funnily enough, i[a] == a[i]. Quick demonstration: i[a] == *(i+a), this is because
+the subscripting operator is actually using pointer arithmetic under the hood. And since *(i+a) == *(a+i) because pointer addition is commutative,
+and *(a+i) == a[i], we have our result.
+49) C allows the use of array names as constant pointers, but that's not the case for array parameter names which can actually be made to point
+elsewhere.
 50) Array parameters and pointers are interchangeable but that's not the case for array variables and pointers. An array name is not even a pointer,
 rather the compiler will convert it to a pointer when necessary. Applying the sizeof operator to both an array and a pointer will showcase the
 difference between the two: sizeof(array) yields the size of a single element in the array multiplied by the number of elements it has, while
