@@ -138,7 +138,7 @@ static void avg_sum(double a[], int n, double *avg, double *sum)
 /* Exo4: */
 
 /* We are asked to write a swap function that exchanges the values of 2 variables i and j when given their addresses as arguments */
-void swap(int *p, int *q)
+static void swap(int *p, int *q)
 {
     int temp;
 
@@ -151,7 +151,7 @@ void swap(int *p, int *q)
 
 /* We are asked to write a function that takes a total amount of seconds since midnight as an argument and splits that into hours, minutes
 and seconds: */
-void split_time(long total_sec, int *hr, int *min, int *sec)
+static void split_time(long total_sec, int *hr, int *min, int *sec)
 {
     *hr = total_sec / 3600;
     *min = (total_sec % 3600) / 60;
@@ -162,7 +162,7 @@ void split_time(long total_sec, int *hr, int *min, int *sec)
 
 /* We are asked to write a function that goes through an array of integers and finds the largest and second largest elements in it and returns
 them in pointer parameters: */
-void find_two_largest(int a[], int n, int *largest, int *second_largest)
+static void find_two_largest(int a[], int n, int *largest, int *second_largest)
 {
     *largest = (a[0] > a[1]) ? a[0] : a[1];
     *second_largest = (a[0] > a[1]) ? a[1] : a[0]; 
@@ -180,7 +180,7 @@ void find_two_largest(int a[], int n, int *largest, int *second_largest)
 
 /* We are asked to write a function that takes a day_of_year and year arguments and extracts the month and day from that and stores them
 in pointer parameters: */
-void split_date(int day_of_year, int year, int *month, int *day)
+static void split_date(int day_of_year, int year, int *month, int *day)
 {
     if(day_of_year <= 366)
     {
@@ -201,7 +201,7 @@ void split_date(int day_of_year, int year, int *month, int *day)
 /* Exo8: */
 
 /* We are asked to write a function that takes an array as an argument and returns a pointer to the array's largest element */
-int *find_largest(int a[], int n)
+static int *find_largest(int a[], int n)
 {
     int *ptr_to_lgst = &a[0];
 
