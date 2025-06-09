@@ -14,7 +14,7 @@ pointing to. In other words, if p points to a[i] and q points to a[j] then p-q i
 6) Performing pointer arithmetic on pointers that don't point to array elements yields undefined behaviors.
 7) The effect of subtracting one pointer from another is undefined unless they both point to elements of the same array.
 8) C allows using relational (<, <=, >, >=) and equality (==, !=) operators with pointers. Comparing pointers with the relational operators is only
-meaningful when both pointers point to elements of the same array. The result depeneds of the relative positions of the elements being pointed to in
+meaningful when both pointers point to elements of the same array. The result depends of the relative positions of the elements being pointed to in
 the array.
 9) A compound literal is a C99 feature that allows us to create an array with no name and saves us the trouble of having to declare an array variable
 before being able to use it.
@@ -58,7 +58,7 @@ array, like *a = 0; for example, we might get informed of how wrong that is the 
 28) C allows us to subscript a pointer as though it were an array. For example: int a[N], *p = a; If these declarations are in effect then p[i] is
 equal to *(p+i) which is legal pointer arithmetic.
 29) In C, multidimensional arrays are stored in row-major order i.e the elements of the first row are all stored first then the elements of the 2nd
-rown and so on until the elements of the last row. So a multidimensional array is basically stored in memory as a one-dimensional array.
+row and so on until the elements of the last row. So a multidimensional array is basically stored in memory as a one-dimensional array.
 30) We can step through a multidimensional array using nested for loops, but we can also use the fact that the array is stored in row-major order
 and use a single loop with pointer arithmetic: for(int *ptr = &a[0][0]; ptr <= &a[MAX_ROW-1][MAX_COLUMN-1]; ptr++).
 31) The previous technique (treating a multidimensional array as a one-dimensional array) may compromise readability but it used to offer a
@@ -115,7 +115,7 @@ sizeof(ptr) yields the size necessary to store a pointer variable.
 51) Some bounds-checking compilers will not allow us to treat multidimensional arrays as one-dimensional since they will see stepping past the last
 element in the first row as illegal (stepping out the bounds of a one-dimensional array).
 52) If a is a 2D array, then a and a[0] are both pointers to a[0][0]. The difference is that a is of type int (*)[MAX_COLUMN] and a[0] is of type
-int *. This means, even though they both hold the same address, the former is actually pointing to a 1D array while the latter is pointing to an int. 
+int *. This means, even though they both hold the same address, the former is actually pointing to a 1D array while the latter is pointing to an int.
 */
 
 #include <stdbool.h>
@@ -129,7 +129,7 @@ int a[] = {5, 15, 34, 54, 14, 2, 52, 72};
 int *p = &a[1], *q = &a[5];
 
 a) The value of *(p+3) is 14
-b) The value if *(q-3) is 34
+b) The value of *(q-3) is 34
 c) The value of q-p is 4
 d) The condition p < q is true
 e) The condition *p < *q is false */

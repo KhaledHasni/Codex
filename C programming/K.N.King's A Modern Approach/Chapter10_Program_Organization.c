@@ -5,7 +5,7 @@
 2) The storage duration or extent of a variable is the portion of program execution during which storage for the variable exists.
 3) Storage for a local variable is automatically allocated when the enclosing function is called and automatically deallocated when the enclosing function returns.
 A local variable is therefore said to have automatic storage duration.
-4) The previous definition might require a bit more depth: At runtime, when a function call is made, its stack frame (portion of stack where local variables will
+4) The previous definition might require a bit more depth: At runtime, when a function call is made, its stack frame (portion of the stack where local variables will
 be allocated) is created and all declarations made inside that function are already known to the compiler from compile time, even those made halfway down the
 function's body. So it's at this exact moment (when the function is called) that space is allocated for all local variables on the stack.
 5) A local variable doesn't retain its value when the enclosing function returns (its storage is automatically deallocated). When the function is called again, we
@@ -16,7 +16,7 @@ have no guarantee that the variable will still hold its last known value.
 purposes.
 9) In C99, a variable's scope can be very limited since we're not obligated to declare variables at the beginning of a function.
 10) Adding the keyword static in front of the declaration of a local variable causes it to become a static local variable. A static local variable has static storage
-duration instead of automatic which means it has a permanent storage location i.e it occupies the same memory location throughout the execution of the program and
+duration instead of automatic which means it has a permanent storage location i.e, it occupies the same memory location throughout the execution of the program and
 therefore will retain its value throughout. Once the enclosing function returns, the static local variable will keep its value.
 11) A static local variable still has block scope so it won't be visible by other functions. This makes declaring a static local variable a good way to hide data from
 other functions while keeping it for future calls of the same function.
@@ -30,7 +30,7 @@ is called. Another way is through external variables.
 an external variable is visible from its point of declaration until the end of the file, which means it can be accessed and modified by all functions that follow
 its declaration.
 17) Side note: A stack is an abstract concept, a data structure capable of storing data items of the same type exactly like an array. The difference is, the number
-of operations that we can perform on a stack is limited: we can either push a data item onto the stack meaning we add an element at one end of the stack called the
+of operations that we can perform on a stack is limited: we can either push a data item onto the stack, meaning we add an element at one end of the stack called the
 stack's top, or we can pop a data item off the stack by removing it from the same end we push to. Examining a data item that's not at the top of the stack is not
 allowed.
 18) External variables, although tempting to use, come with their fair share of issues and it's usually better to make functions communicate through arguments. The
@@ -48,24 +48,24 @@ These types of compound statements can be called blocks.
 can be declared static for it to have static storage duration.
 26) A variable declared in a block has block scope: it can't be referenced outside of the block.
 27) The body of a function is itself a block.
-28) Blocks are useful inside the body of a function especially when we need to declare variables for temporary use. The following 2 points site 2 advantages for this.
+28) Blocks are useful inside the body of a function especially when we need to declare variables for temporary use. The following 2 points cite 2 advantages for this.
 29) Using blocks inside the body of a function to declare temp variables avoids cluttering the top of the function with declarations of variables that will only be
 used briefly.
 30) Using blocks inside the body of a function to declare temp variables reduces name conflict. The same name can be used for other local variables outside the block.
-The variable decalred inside the block is strictly local to that block.
+The variable declared inside the block is strictly local to that block.
 31) C99 allows the declaration of a variable anywhere in a block and not necessarily at the top, just as it does for functions.
 32) An identifier in a C program may have several different meanings throughout the program. C offers scope rules to determine which meaning is relevant at any given point.
 33) The most important scope rule in C is the following: when a declaration inside a block names an identifier that's already visible either because it has file scope
 or because it was declared in an enclosing block, the new declaration temporarily hides or shadows the old one, and the identifier takes on a new meaning. Once the
 block is exited, the identifier regains its old meaning.
-34) Assuming a C program is restricted to a single file (which is usually not the case obviously), th elements that would make it up would roughly be:
+34) Assuming a C program is restricted to a single file (which is usually not the case obviously), the elements that would make it up would roughly be:
 preprocessing directives such as #include and #define, declaration of external variables, type definitions, function prototypes and function definitions.
 35) C does not impose a lot of rules on the order of these items. The few rules we need to keep in mind are, a preprocessor directive does not take effect until the line
 where it appears, a type name can't be used until it's been defined and a variable can't be used until it's been declared. Rules about functions are less rigid, but it's
 usually a good idea to declare or define a function before it's first call. This is in fact a requirement for C99.
 36) When a function is called recursively, fresh copies of its local automatic variables are made at every call. The same can't be said for its static local variables.
 These are shared across calls of the recursive function.
-37) If we consider the following example: int i = 1; void f(void) {int j = i; int i = 2;}, the initial value of j would be 1. In fact the second declaration of i doesn't
+37) If we consider the following example: int i = 1; void f(void) {int j = i; int i = 2;}, the initial value of j would be 1. In fact, the second declaration of i doesn't
 take effect until after j is declared and initialized. And since the second i is a local variable, it has block scope that starts from where it's been declared. At the
 point where j is declared and initialized, only the external i is visible and in scope. Had the second declaration and initialization of i been before that of j inside
 the function's body, we would have been able to say that j would be initialized to 2 since the local i would temporarily shadow the external i.
@@ -81,9 +81,9 @@ the function's body, we would have been able to say that j would be initialized 
 
 /* We are asked how many distinct variables named i can there be in a C program that contains a single function which is the main function.
 
-Well, we can safely assume that this program has a signle file since it has a single function, so the natural thing to do would be to start thinking of the different
+Well, we can safely assume that this program has a single file since it has a single function, so the natural thing to do would be to start thinking of the different
 types of variables that we can have. External and local would be all. We can't have a parameter named i since this is the main function so it either takes an array
-of arguments with their count ot it doesn't take any arguments at all. So the tempting answer then would be 2, we could only have 2 variables named i, an external i
+of arguments with their count or it doesn't take any arguments at all. So the tempting answer then would be 2, we could only have 2 variables named i, an external i
 and a local i declared inside main, but that's the wrong answer. The correct answer would be an infinity; we can in theory declare as many variables called i as we
 want if we're willing to use nested blocks inside the main function's body. The number of variables that we can declare is only constrained by how deeply and extensively
 we nest our blocks, which in practice is only limited by the compiler's limits and readability, and not by C itself. Every block can contain a declaration of a new i
