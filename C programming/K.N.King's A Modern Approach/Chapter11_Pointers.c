@@ -8,7 +8,7 @@ variable itself.
 3) Addresses cannot be stored in ordinary integer variables since their range of values isn't necessarily compatible with that of
 integer variables --> we store them in pointer variables.
 4) A pointer is C's fancy way of saying an address and pointer variables are variables capable of storing addresses.
-5) A pointer variable can only point to objects of a particular type only. This type is called the referenced type. C enforces no
+5) A pointer variable can only point to objects of a particular type. This type is called the referenced type. C enforces no
 restrictions on what the referenced type may be. We can even make a pointer point to another pointer.
 6) Declaring a pointer variable sets aside space for it in memory but doesn't make it point to anywhere in particular. It's absolutely
 crucial that we initialize a pointer before using it, and one way of doing that for example is to assign it the address of some lvalue.
@@ -52,8 +52,8 @@ before and after the pointer's type in the declaration: void function(const int 
 25) A pointer usually is a synonym of an address but that's not always the case. That's usually the case if addresses on the specific platform
 we're using are unique identifiers for the smallest unit of memory that can hold the value of a variable. For example, in most modern computers,
 all variables will occupy at least one byte in memory, meaning that if our memory is byte-addressed, an address and a pointer will be synonyms
-in this case. A counter example to this would be a platform that is word-addressed with a word capable for example of holding 36 or 60 bits.
-If a variable requires 6 bits only to be stored, we will need to know the address of the word it's stored in and how many bits off the start of
+in this case. A counter example to this would be a platform that is word-addressed with a word capable of holding, for example 36 or 60 bits.
+If a variable requires only 6 bits to be stored, we will need to know the address of the word it's stored in and how many bits off the start of
 the word it's located which is called the offset within the word. In this case, the pointer becomes an address + offset and not just an address.
 */
 
@@ -74,22 +74,22 @@ we can think of the indirection and the address operators as 2 operators that wi
 get to the same conclusion: *&p is an alias for p not for i.
 (d) &*p is not an alias for i. It's not an alias for p either. If we want to get really serious about our pointers here, &*p is an expression
 that will evaluate to the value stored in p but it does not represent the object p itself, therefore it's not an alias for it. One more way
-of looking at it is that & produces an rvalue while p is an lvalue. so &*p is an rvalue and therefore can't be an alias for an lvalue.
+of looking at it is that & produces an rvalue while p is an lvalue. So &*p is an rvalue and therefore can't be an alias for an lvalue.
 (e) *i is not an alias for i. This use of the indirection operator is particularly dangerous. If i contains a value that corresponds to a
 valid memory address at the time of the execution of this statement, we will essentially be trying to access the value stored at that valid
-address. What could make this really dangerous is if we try to assign a value to this lvalue (*p).
+address. What could make this really dangerous is if we try to assign a value to this lvalue (*i).
 (f) &i is not an alias for i. This represents the address of i in memory.
 (g) *&i is an alias for i. &i provides the address of i in memory which essentially equates to a pointer to i. Applying the indirection
 operator to that pointer gives us access to the object the pointer is currently pointing to, which is always going to be i. We can use the
 mathematical cancellation trick as well.
-(h) &*i is not alias for i. This is actually meaningless since i is a variable so applying the indirection operator to it makes no sense. */
+(h) &*i is not an alias for i. This is actually meaningless since i is a variable so applying the indirection operator to it makes no sense. */
 
 /* Exo2: */
 
 /* If i is an int variable and p and q are pointers to int then:
-(a) p = i; is not a legal assignment. We cannot assign an int variable to an int pointer variable.
+(a) p = i; is not a legal assignment. We cannot assign an int variable value to an int pointer variable.
 (b) *p = &i; is not a legal assignment. First of all, *p is an lvalue so we can assign values to it, that's not the issue. The problem is
-*p is expecting an int value since p is an int pointer so *p should in theory be an alias for an int variable. So if we try to assign the
+*p is expecting an int value since p is an int pointer, so *p should in theory be an alias for an int variable. So if we try to assign the
 address of an int variable to it, that would be a problem.
 (c) &p = q; is not a legal assignment. We're trying to assign a pointer to int to a pointer to a pointer to int.
 (d) p = &q; is not a legal assignment. We're trying to assign a pointer to a pointer to int to a pointer to int.
@@ -122,7 +122,7 @@ void avg_sum(double a[], int n, double *avg, double *sum)
 as weird or unexpected. So this can only mean we have syntax issues or bad usage of pointers. The next thing to do is to try compiling this code.
 The compilation produces 3 errors:
 1) sum = 0.0; is problematic. sum is a pointer parameter and we're trying to assign a double value to it. This is illegal.
-2) sum += a[i]; is problematic. sum is again a pointer and we're trying to assign double values to it. This illegal.
+2) sum += a[i]; is problematic. sum is again a pointer and we're trying to assign double values to it. This is illegal.
 3) avg = sum / n; is problematic. sum and avg are pointers and should be treated as such. 
 --> To fix this function, we could do the following: */
 static void avg_sum(double a[], int n, double *avg, double *sum)
@@ -160,7 +160,7 @@ static void split_time(long total_sec, int *hr, int *min, int *sec)
 
 /* Exo6: */
 
-/* We are asked to write a function that goes through an array of integers and finds the largest and second largest elements in it and returns
+/* We are asked to write a function that goes through an array of integers and finds the largest and second-largest elements in it and returns
 them in pointer parameters: */
 static void find_two_largest(int a[], int n, int *largest, int *second_largest)
 {
@@ -171,14 +171,14 @@ static void find_two_largest(int a[], int n, int *largest, int *second_largest)
         if(a[i] > *largest){
             *second_largest = *largest;
             *largest = a[i];
-        } else if(a[i] > *second_largest) //This will consider any duplicates equal to *largest as second largest
+        } else if(a[i] > *second_largest) // This will consider any duplicates equal to *largest as second-largest
             *second_largest = a[i];
     }
 }
 
 /* Exo7: */
 
-/* We are asked to write a function that takes a day_of_year and year arguments and extracts the month and day from that and stores them
+/* We are asked to write a function that takes a day_of_year and year arguments and extracts the month and day from them and stores them
 in pointer parameters: */
 static void split_date(int day_of_year, int year, int *month, int *day)
 {
