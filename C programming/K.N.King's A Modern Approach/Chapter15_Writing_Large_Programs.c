@@ -7,19 +7,19 @@ the program.
 2) Let's look at a case study: Suppose we want to write a program that simulates a calculator that evaluates integer expressions entered in Reverse Polish
 notation (RPN). This is a notation where operators follow their operands like this for example: 30 5 - 7 *. One strategy we can use to create such a program
 is to have it read the integer expression one token at a time, compute and store the intermediate results in a data structure like a stack for example. If
-the program reads a number, it gets pushed onto the stack, if it reads an operator, 2 numbers get popped from the stuck, they will serve as that operator's
+the program reads a number, it gets pushed onto the stack, if it reads an operator, 2 numbers get popped from the stack, they will serve as that operator's
 two operands, the result is computed then pushed back onto the stack. By the time the program would have read all of the user's input, the final result would
 be available in the stack.
 3) So if we apply the previous algorithm on the following RPN expression: 30 5 - 7 *, this is how it would get resolved:
     *) The program reads the first token, 30 and pushed it onto the stack.
-    *) The program reads the next tpken, 5 and pushed it onto the stack.
+    *) The program reads the next token, 5 and pushed it onto the stack.
     *) The program reads the next token, - which is an operator so it pops its two operands from the stack which would be 30 and 5.
     *) The program computes the result of 30 - 5 which is 25 and pushes it onto the stack.
     *) The program reads the next token, 7 and pushes it onto the stack.
     *) The program reads the final token, * which is an operator so it pops its two operands from the stack which would be 25 and 7.
     *) The program computes the result of 25 * 7 which is 175 and pushes it onto the stack.
 4) Turning this algorithm into a program isn't hard, we could just write a loop in its main function that would read a token from the user's input, if that
-token is a number, it will push it onto the stack, if its an operand, it would pop its two operands from the stack, compute the result of the operation and
+token is a number, it will push it onto the stack, if it's an operand, it would pop its two operands from the stack, compute the result of the operation and
 push the result onto the stack.
 5) The previous example shows that it makes sense to divide a program into source files that have semantically related elements. So for example, the function
 that would read the tokens one at a time from the user's input can go into a separate file that might be called token.c, along with any other functions or
@@ -27,7 +27,7 @@ variables that have to do with tokens. Functions that are related to the stack l
 called stack.c along with the actual data structure that would represent the stack itself like an array for example. The main function could go in another
 file called calc.c for example.
 6) Splitting a C program into multiple source files has a lot of advantages:
-    *) Grouping related functions and variables into a single program helps clrify the structure of the program.
+    *) Grouping related functions and variables into a single program helps clarify the structure of the program.
     *) Each source file can be compiled separately which saves a lot of time especially if the program is large and changes frequently.
     *) It makes the program more modular which makes it easier to maintain, easier to debug, and makes large portions of it reusable.
 7) When we split a program over multiple source files, these files will more than likely need to be able to share information. Otherwise, how would a function
