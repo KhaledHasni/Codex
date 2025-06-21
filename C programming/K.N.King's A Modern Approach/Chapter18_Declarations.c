@@ -342,5 +342,110 @@ extern double average(double a, double b);
 --> A file that needs to call "average" will have to just include the previous header file which contains its inline definition, while the matching source file
 contains an extern prototype of average which causes the definition of average included from the header to be treated as an external definition in the matching source
 file.
+65) A general rule in C99 is this: if all top-level declarations of a function in a file include the keyword "inline" but not "extern", then the definition of that
+function in that file is inline. If the function is used anywhere in the program including the file that contains its inline definition, then an external definition
+of the function has to be provided by some other file. When the function is called, the compiler will choose to either perform an ordinary call using the function's
+external definition or perform inline expansion using the function's inline definition. There's no way to predict which choice the compiler will make so it's crucial
+that both definitions be consistent. Point 64 ensures these definitions are the same.
+66) Inline functions are subject to different restrictions compared to ordinary functions. In particular, variables with static storage duration are a problem for
+inline functions with external linkage, which leads to the following rules being imposed on inline functions with external linkage but not on ones with internal linkage:
+    *) The function may not define a modifiable static variable.
+    *) The function may not contain references to variables with internal linkage.
+    *) The function may define a variable that is both static and const, but each inline definition may create its own copy of the variable.
+67) Some compilers, GCC included, supported inline functions prior to the C99 standard and therefore might have rules that slightly deviate from the C99 standard when
+using inline functions. For example, the scheme described in point 64 may not work with these compilers.
+68) Functions that are both static and inline should work with GCC regardless of the version. It can be used within a single file or placed in a header file and included
+into any source file that needs to call it. This strategy is legal in C99.
+69) There's another way of sharing an inline function among multiple files that works with older versions of GCC but conflicts with C99. This technique entails putting
+a definition of the function in a header file specifying that it's both extern and inline, then including the header file into any source file that includes a call to
+the function. A second copy of the definition, without the keywords extern and inline, is placed in one of the source files, which guarantees that if the compiler is
+unable to inline the function, it will still have a definition to fall back on.
+70) In GCC, functions are inlined only when the -O command-line option is requested.
+71) Declarations in C are meant to mimic use. A pointer declarator has the form *p which matches the way the indirection operator * will later be applied to p. An array
+declarator has the form a[] which matches the way the array will later be subscripted. A function declarator has the form f(), which matches the syntax of a function call.
+Example: If we consider an array a whole elements are pointers to functions, its declarator will have the form (*array[])(void). A call to one of the functions of the
+array has the form (*array[n])(). Note that the parentheses, brackets and * are in identical positions.
+72) Scope vs Linkage: Scope is for the benefit of the compiler while linkage is for the benefit of the linker:
+    *) The compiler will use the scope of an identifier to determine whether or not it's legal to refer to that identifier at any given point in the program.
+    *) When the compiler translates a source file into object code, it takes note of which names have external linkage and stores them in a table in the object file. This
+way, the linker can have access to names with external linkage, internal linkage and no linkage at all (which are invisible to the linker).
+73) It might not be so obvious how a variable can have block scope but external linkage so here's an example: Suppose a file a.c declares a variable int i; outside of all
+functions. i therefore will have external linkage by default. Let's assume that a function f defined in another file b.c needs to access i so the body of f will have to
+declare i as extern: void f(void){extern int i;....}. In a.c, i has file scope since it's declared outside all functions. In b.c however, i has block scope since it's
+declared inside f's body. If another function defined in b.c needs to access i, it will have to declare it in its body as well, or alternatively, we can declare i as extern
+in b.c outside of all function bodies. The confusing thing about all of this is the fact that every declaration or definition establishes a different scope, sometimes it's
+block scope and other times it's file scope.
+74) We've established that storage, for a variable with automatic storage duration, is automatically allocated when the surrounding block is executed. This is not true for
+C99's variable-length arrays since the array's length isn't yet known when the surrounding block is executed. The allocation happens instead when the declaration of the
+variable-length array is reached during the execution of the block. In this respect, variable-length arrays are different from all other automatic variables.
+75) A common misconception in C is that const objects denote objects that hold "constant" values and can therefore be used in constant expressions. This is not true as
+const in C means "read-only" and not "constant". In fact, the value of a const object might only be constant during its lifetime and not for the whole execution duration
+of the program. Example: Suppose we have a function f inside of which we declare a const int variable m: void f(int n){const int m = n / 2;...}. When f is called, m will
+be initialized to n/2 and that value will then remain constant until the function returns. Next time f is called, depending on the argument it will take, m will likely be
+initialized to a different value. Now suppose that the rest of the function's body contains a switch statement like this:
+void f(int n)
+{
+    const int m = n / 2;
 
+    switch(//something) {
+        case m:
+            //do something
+            break;
+        case default:
+            //do something else
+            break;
+    }
+}
+--> Since the value of m won't be known until f is called, this is a violation of one of C's rules that states that the values of case labels in a switch statement must be
+constant expressions.
+76) Another reason why a const object can't be used in constant expressions can be inferred from this example: Suppose we declare a const object in a file outside all
+functions. Such an object will have external linkage and can be shared between files. Here's a possible situation we will find ourselves in:
+extern const int n;
+int a[n]; //WRONG!!!
+--> Although n is declared here, it's more than likely defined in another file, which makes it impossible for the compiler to determine the array a's length, assuming of
+course that a is an external array so it can't be a variable-length array.
+77) Another stonewall reason that proves const objects don't hold constant values per se, is the case of const volatile objects which is discussed in the C standard itself.
+Consider the case of a variable called real_time_clock declared as follows: extern const volatile int real_time_clock; This variable cannot be changed by the program since
+it's const but it still can be changed through some other mechanism since it's volatile.
+78) In C99, selection and iteration statements and their respective inner statements are considered blocks, despite how counter-intuitive that may seem. This is due to a
+known problem involving the storage duration of compound literals when compound they're used in selection and iteration statements. In fact, the C99 standard states that
+an object represented by a compound literal has static storage duration if the compound literal occurs outside the body of a function, otherwise it has automatic storage
+duration. If it's the latter, the memory occupied by the object will be deallocated at the end of the block in which the compound literal appears. So let's consider this
+function which returns a structure called point created using a compound literal:
+struct point create_point(int x, int y)
+{
+    return (struct point) {x, y};
+}
+--> This function will work just fine because the object created by the compound literal will be copied when the function returns. The original object will no longer exist
+but the copy will remain. Now suppose we tweak the function to make it return a pointer to a structure instead:
+struct point *create_point(int x, int y)
+{
+    return &(struct point) {x, y};
+}
+--> This function suffers from an undefined behavior because it returns the address of an object that has automatic storage duration and will therefore not exist by the time
+the function has returned.
+--> Here's where the problem comes in: Consider the following example that will explain why selection and iteration statements are considered blocks in C99:
+double *coefficients, value;
+if(polynomial_selected == 1)
+    coefficients = (double[3]){1.5, -3.0, 6.0};
+else
+    coefficients = (double[3]){4.5, 1.0, -3.5};
+value = evaluate_polynomial(coefficients);
+--> This fragment should behave in the expected manner: coefficients will point to one of two objects created by compound literals, and that object will still exist by the
+time evaluate_polynomial is called. Now consider what happens when we add braces to if's inner statements:
+double *coefficients, value;
+if(polynomial_selected == 1) {
+    coefficients = (double[3]){1.5, -3.0, 6.0};
+} else {
+    coefficients = (double[3]){4.5, 1.0, -3.5};
+}
+value = evaluate_polynomial(coefficients);
+--> Each compound literal causes an object to be created, but that object will have automatic storage duration and will therefore only exist within the block delimited by the
+braces. By the time evaluate_polynomial is called, coefficients points to an object that no longer exists which results in undefined behavior.
+--------> Foreseeing that adding braces to the inner statements could unexpectedly cause undefined behavior is likely going to confuse a lot of C programmers, the creators
+of C99 decided to just consider inner statements of selection and iteration statements as blocks whether they're enclosed in braces or not. This means both our
+examples are equivalent in C99, and both will produce undefined behaviors.
+79) A similar problem to the one described in point 78 can arise when a compound literal is used in the controlling expression of an iteration or selection statement.
+Consequently, each entire selection/iteration statement is considered to be a whole block as though an invisible set of braces surrounds the entire statement. So for example,
+an if statement with an else clause consists of three blocks: the two inner statements of if and else, and the entire if statement as well.
 */
