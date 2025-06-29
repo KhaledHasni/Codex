@@ -364,7 +364,7 @@ the item union embedded in the gift_item structure used in the example in point 
 first member called design. If we assign a value to one of the design members: strcpy(g.item.mug.design, "Cat"); the design member in the other structure will also be defined
 and have the same value: printf("%s", g.item.shirt.design); will print "Cat".
 58) Let's examine how a union can be used to build mixed data structures. Suppose we need to create an array whose elements are a mixture of int and double values. At first
-glance, it might seem impossible to create such a data structure since the elements of an array must be of the same type. However, this can be achieved relatively easily using 
+glance, it might seem impossible to create such a data structure since the elements of an array must be of the same type. However, this can be achieved relatively easily using
 unions. We start by defining a union type whose members are the different kinds of data to be stored in the array:
 typedef union {
     int i;
@@ -450,7 +450,7 @@ typedef enum {FALSE, TRUE} Bool;
 In our suit enumeration for example, SPADES, HEARTS, DIAMONDS, CLUBS represent the values 0, 1, 2 and three respectively.
 70) We can choose different values to be assigned to our enumeration constants if we want. Example: enum suit {SPADES = 1, HEARTS = 2, DIAMONDS = 3, CLUBS = 4};
 71) The values of our enumeration constants can even be arbitrary integers listed in no particular order. Example:
-enum suit {SPADES = 10, HEARTS = 205, DIAMONDS = 3, CLUBS = 47}; 
+enum suit {SPADES = 10, HEARTS = 205, DIAMONDS = 3, CLUBS = 47};
 72) Different enumeration constants in the same enumeration can have the same value.
 73) When no value is specified for an enumeration constant, its value will by default be one greater than the value of the previous constant, with the first constant's value
 being zero by default. Example: in the following enum, BLACK has the value 0 and DK_GRAY has the value 8:
@@ -520,5 +520,27 @@ struct part {
 --> Notice that we only declared the structure tag, not variables of this type.
 83) A header file that contains a declaration of a structure tag or structure type may need protection against multiple inclusion since declaring a tag or a typedef name twice
 in the same file is an error. This also applies to unions and enumerations.
-84)
+84) If we declare a structure in a header file and include that file in two source files, the variables of that structure type in both files will technically not be of the same
+type, however, the C standard states that both sets of variables will have compatible types. And since variables of compatibles types can be assigned to each other, there's
+little practical difference between two types being "compatible" and "the same".
+85) The rules for structure compatibility in C89 and C99 are slightly different. In C89, two structures defined in different files are compatible if their members have the same
+names and appear in the same order, with corresponding members having compatible types. C99 takes this a step further by requiring that either both structures have the same tag
+or neither has a tag. Note: Compatibility rules mentioned in this point and in point 84 also apply to unions and enumerations with the same differences between C89 and C99.
+86) C99 allows having pointers to compound literals. Example: If we consider the print_part function from point 28 which takes a part structure as an argument. The function would
+be much more efficient if it were modified to take a pointer to a part structure instead. We can then use call the function with the address of a compound literal as an argument:
+print_part(&(struct part) {528, "Disk Drive", 10});
+87) Compound literals are lvalues and can be modified, although doing so is rare. This explains the fact that pointers to compound literals are legal.
+88) C99, as well as some pre-C99 compilers allow commas after the final constant in an enumeration. In fact, allowing this trailing comma makes enumerations easier to modify since
+constants can be added without having to change any existing lines of code. Perhaps one reason for introducing this in C99 is the fact that C89 allowed trailing commas in
+initializers so it seemed inconsistent not to allow the same flexibility in enumerations. To further prove this point, C99 also allows trailing commas in compound literals.
+89) Enumerations constants can be used as subscripts since they're technically aliases for integers.
+90) In C99, enumeration constants can be used as subscripts in designated initializers. Example:
+enum weekdays {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
+const char *daily_specials[] = {
+    [MONDAY] = "Pasta",
+    [TUESDAY] = "Pizza",
+    [WEDNESDAY] = "Salad",
+    [THURSDAY] = "Ravioli",
+    [FRIDAY] = "Chicken"
+};
 */
