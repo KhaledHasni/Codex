@@ -1,9 +1,9 @@
 <h1 align="center">💡<strong> Introducing C</strong></h1>
-
 <p align="center">
-  <a href="#cs-history">C's History</a> •
-  <a href="#cs-strengths--weaknesses">C's Strengths & Weaknesses</a> •
-  <a href="#writing-effective-c-code">Writing Effective C Code</a>
+  <a href="#scroll-cs-history">C's History</a> •
+  <a href="#muscle-cs-strengths--weaknesses-wilted_flower">C's Strengths & Weaknesses</a> •
+  <a href="#dart-writing-effective-c-code">Writing Effective C Code</a> •
+  <a href="#game_die-miscellaneous"> Miscellaneous</a>
 </p>
 
 ## :scroll: C's History
@@ -92,3 +92,10 @@ locked behind a paywall.
    * Apply a coding convention and abide by it.
    * Stick to the standard: Many C compilers offer features and library functions that are not compliant with either C89 or C99. It's best to avoid these to write 
 portable C programs.
+
+## :game_die: Miscellaneous
+
+* Lint is a UNIX utility that goes through a C program and checks for potential issues including unreachable code, problematic type combinations and unused variables.
+* Lint is readily available on UNIX, an enhanced version of it known as Splint is distributed with many Linux distributions.
+* Lint is mostly obsolete in modern C programming. Most compilers nowadays will do a thorough enough job of catching errors, detecting potential trouble spots and producing warnings to point them out.
+* Tools like clang-tidy, cppcheck and Coverity have mostly superseded Lint in performing static code analysis.
