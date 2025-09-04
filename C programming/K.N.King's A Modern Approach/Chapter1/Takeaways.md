@@ -1,5 +1,11 @@
 <h1 align="center">💡<strong> Introducing C</strong></h1>
 
+<p align="center">
+  <a href="#cs-history">C's History</a> •
+  <a href="#cs-strengths--weaknesses">C's Strengths & Weaknesses</a> •
+  <a href="#writing-effective-c-code">Writing Effective C Code</a>
+</p>
+
 ## :scroll: C's History
 
 * C came about as a by-product of the UNIX operating system, which was a project undertaken by the engineering team at Bell Laboratories (D&R branch of Nokia today).
@@ -74,7 +80,7 @@ wrote it. Programmers trying to be cheeky and clever, of course, doesn't help ei
    * C programs can be hard to change: C doesn't offer classes or packages or other containment concepts that break down programs into smaller, more manageable
 pieces.
 
-## :dart: Writing effective C code
+## :dart: Writing Effective C Code
 
 * To write effective C code:
    * Avoid C's pitfalls: A programmer will become familiar with many of these pitfalls the more C code they write.
