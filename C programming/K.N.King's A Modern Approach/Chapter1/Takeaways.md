@@ -1,4 +1,5 @@
 <h1 align="center">💡<strong> Introducing C</strong></h1>
+
 <p align="center">
   <a href="#cs-history">C's History</a> •
   <a href="#cs-strengths--weaknesses">C's Strengths & Weaknesses</a> •
