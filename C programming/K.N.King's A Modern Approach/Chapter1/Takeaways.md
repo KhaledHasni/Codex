@@ -1,8 +1,9 @@
 <h1 align="center">💡<strong> Introducing C</strong></h1>
 <p align="center">
-  <a href="#cs-history">C's History</a> •
-  <a href="#cs-strengths--weaknesses">C's Strengths & Weaknesses</a> •
-  <a href="#writing-effective-c-code">Writing Effective C Code</a>
+  <a href="#scroll-cs-history">C's History</a> •
+  <a href="#muscle-cs-strengths--weaknesses-wilted_flower">C's Strengths & Weaknesses</a> •
+  <a href="#dart-writing-effective-c-code">Writing Effective C Code</a> •
+  <a href="#game_die-miscellaneous"> Miscellaneous</a>
 </p>
 
 ## :scroll: C's History
