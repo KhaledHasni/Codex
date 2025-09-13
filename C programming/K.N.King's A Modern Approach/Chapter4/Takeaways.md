@@ -45,6 +45,22 @@ When both division operands have the same sign, both these rounding techniques y
 
 ### :small_blue_diamond: Operator Precedence And Associativity
 
+* C uses operator precedence rules to resolve the ambiguity that arises when more than one operator is used in the same expression.
+* As a general rule, C imposes no restrictions on the use of parentheses in such expressions to avoid said ambiguity.
+* C's arithmetic operators have three levels of relative precedence:
+   * Highest: Unary plus ```+```, Unary minus ```-```.
+   * Intermediate: ```*```, ```/```, ```%```.
+   * Lowest: Binary plus ```+```, Binary minus ```-```.
+* When evaluating an expression containing more than one arithmetic operator with no parentheses, the idea is to break it down into subexpressions starting with the highest operator precedence and working our way down. This is equivalent to enclosing these subexpressions in parentheses and evaluating the resulting expression:
+   * ```i + j * k``` is equivalent to ```i + (j * k)```
+   * ```i + -j / k``` is equivalent to ```i + ((-j) / k)```
+* Precedence rules are not enough when more than one operator of the same precedence level are used in the same expression. This is where operator associativity comes into play.
+* An operator is said to be left-associative if it groups from left to right. All of C's binary arithmetic operators are left-associative.
+   * Example: ```i + j - k``` is equivalent to ```(i + j) - k```.
+* An operator is said to be right-associative if it groups from right to left. C's unary plus and minus operators are right-associative.
+   * Example: ```+-i``` is equivalent to ```+(-i)```.
+* A C programmer will have to learn these precedence and associativity rules to be able to efficiently navigate arithmetic expressions. Most C programmers don't bother to learn them however, opting instead for using a lookup table of rules when necessary or relying on parentheses whenever in doubt.
+
 ## 🟰 Assignment Operators
 
 ## ➕ Increment And Decrement Operators ➖
