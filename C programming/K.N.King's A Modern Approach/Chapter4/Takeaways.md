@@ -104,6 +104,22 @@ When both division operands have the same sign, both these rounding techniques y
 
 ## ➕ Increment And Decrement Operators ➖
 
+* Incrementing a variable means adding one to its value.
+* Decrementing a variable means subtracting one from its value.
+* These two operations can be achieved using the compound assignment operators ```+=``` and ```-=``` respectively.
+* C provides two other operators dedicated to incrementing and decrementing the values of variables. These operators are ```++``` and ```--``` called increment and decrement respectively.
+* The increment ```++``` and decrement ```--``` operators come in two types:
+   * Prefix: ```++i```, ```--i```.
+   * Postfix: ```i++```, ```i--```.
+* ```++``` and ```--``` are notoriously tricky to use because of their side effects.
+   * The expression ```++i``` evaluates to ```i + 1``` and ```i``` is incremented as a side effect.
+   * The expression ```i++``` evaluates to ```i``` and ```i``` is incremented as a side effect.
+* Prefix increment basically means increment the variable immediately while postfix increment basically means use the current value of the variable for now and increment it later. That "later" however, is where confusion could arise as it's not specified in the C standard but rather depends on whether or not a sequence point has been reached.
+* A sequence point in C is a stage in a program's execution at which all side effects from previous evaluations are guaranteed to have been performed and no side effects from subsequent evaluations have yet been performed.
+* When multiple increment or decrement operators are used in the same expression, it can sometimes become difficult to understand. A good rule of thumb is to avoid writing such statements.
+* The postfix increment ```++``` and postfix decrement ```--``` operators have higher precedence than unary plus and minus. They are also left-associative.
+* The prefix increment ```++``` and prefix decrement ```--``` operators have the same precedence as unary plus and minus. They are also right-associative.
+
 ## :gear: Expression Evaluation
 
 ## :speech_balloon: Expression Statements
