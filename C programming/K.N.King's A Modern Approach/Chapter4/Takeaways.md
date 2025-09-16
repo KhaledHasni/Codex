@@ -122,6 +122,31 @@ When both division operands have the same sign, both these rounding techniques y
 
 ## :gear: Expression Evaluation
 
+* The following table summarizes all operators discussed in this chapter, their relative levels of precedence and their associativity:
+| Precedence | Name                                             | Symbol                            | Associativity |
+| :--------: | :----------------------------------------------: | :-------------------------------: | :-----------: |
+| 1          | increment/decrement (postfix)                    | ```++``` ```--```                 | left          |
+| 2          | increment/decrement (prefix), plus/minus (unary) | ```++``` ```--``` ```+``` ```-``` | right         |
+| 3          | multiplicative                                   | ```*``` ```/``` ```%```           | left          |
+| 4          | additive (binary plus and minus)                 | ```+``` ```-```                   | left          |
+| 5          | assignment (simple and compound)                 | ```=``` ```+=``` ```-=``` ...     | right         |
+* When dealing with an expression involving multiple operators, the idea is to determine the operation with highest precedence using the table above and enclose its operator along with its operands in parentheses. When two adjacent operators have the same level of precedence, associativity rules apply. This scheme is repeated until the full expression is parenthesized.
+* Operator precedence and associativity rules in complex expressions allow us to determine where parentheses would have been placed had the expression been fully parenthesized and broken down into subexpressions.
+* C provides no guarantee on the order in which these subexpressions are evaluated. This shouldn't be an issue in most cases since the order in which subexpressions are evaluated doesn't usually impact the expression's final value. This is not the case however when a subexpression modifies one of its operands.
+   * Assuming ```a = 1``` is in effect, the expression ```c = (b = a + 1) - (a = 2)``` is undefined.
+   * We don't know whether the subexpression ```b = a + 1``` or ```a = 2``` will be executed first.
+   * The value of the full expression depends entirely on the order in which these subexpressions are evaluated.
+* It's usually best to avoid writing expressions that both access and modify a variable. Some compilers may even produce warnings when they encounter such code.
+* It's also a good idea to avoid using the assignment operator in subexpressions and use multiple separate assignments instead.
+* C's assignment operators, along with the increment and decrement operators, are the only operators that modify their operands.
+* Just like with the assignment operators, it's best to avoid writing expressions that both increment/decrement and access a variable. This may cause undefined behavior.
+   * The effect of evaluating ```a = b * b++``` is undefined.
+* The C standard points out behavior like the aforementioned ones and labels them as "Undefined behavior". When this happens in a C program, the outcome is unpredictable:
+   * The program may behave differently when compiled with different compilers.
+   * The program may not compile at all.
+   * The program may compile but not run.
+   * The program may run but crash or produce unexpected results.
+
 ## :speech_balloon: Expression Statements
 
 ## :game_die: Miscellaneous
