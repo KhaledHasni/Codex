@@ -63,6 +63,45 @@ When both division operands have the same sign, both these rounding techniques y
 
 ## 🟰 Assignment Operators
 
+* C's simple assignment ```=``` operator is used to store the value of an expression in a variable for later use.
+* C also offers compound assignment operators to modify a value already stored in a variable.
+* Using the ```=``` operator will essentially evaluate the right operand and copy the result into the left operand.
+* ```=```'s right operand can be a constant, a variable or even an expression.
+* If the right and left operands don't have matching types, the right operand will be converted to the left operand's type as the assignment happens. Assuming ```i``` is an integer variable and ```f``` is a floating-point variable:
+   * ```i = 3.2f``` will result in ```i``` having the value ```3```.
+   * ```f = 5``` will result in ```f``` having the value ```5.0```.
+* Assignment in C is an operator. It produces a result just like any other operator.
+* The value of ```v = e``` is the value of ```v``` after the assignment takes place. Assuming ```i``` and ```f``` are an integer and a floating-point variable respectively:
+   * The value of the assignment ```i = 3.5f``` is ```3``` and not ```3.5```.
+* An operator is said to have a side effect if it alters the value of one or more of its operands.
+* C's simple assignment operator has side effects. It evaluates its right operand, then modifies the value of its left operand by copying the result into it.
+* In the assignment ```v = e```, ```=``` evaluates ```e``` and as a side effect assigns that value to ```v```.
+* The fact that C sees ```=``` as an operator means several assignments can be chained together in the same expression.
+* The simple assignment ```=``` operator is right-associative:
+   * ```i = j = k = 5``` is equivalent to ```i = (j = (k = 5))``` and will assign ```5``` to ```k``` then to ```j``` then to ```i```.
+* Type conversion when right and left ```=``` operands are of different types still applies for chained assignments.
+* An assignment of the form ```v = e``` is allowed wherever a value of type ```v``` is allowed:
+   * ```i = k + (j = 6)``` will assign ```6``` to ```j```, add ```6``` to ```k``` and assign the result to ```i```.
+* Using chained assignments can make programs hard to read.
+* C's simple assignment operator requires an lvalue as its left operand.
+* An lvalue is an object that occupies a place in computer memory unlike a constant value or an expression.
+* Variables are lvalues.
+* Using an expression or a constant or any other non-lvalue as ```=```'s left operand will result in a compilation error.
+* C provides compound assignment operators that allow us to overwrite the value of a variable with a new value computed using the old value.
+   * ```i += 1``` performs the same task as ```i = i + 1```.
+* C provides a total of 10 compound assignment operators.
+* Assuming ```v``` is a variable and ```e``` is an expression:
+   * ```v += e``` adds the value of ```e``` to that of ```v``` and stores the result in ```v```.
+   * ```v -= e``` subtracts the value of ```e``` from that of ```v``` and stores the result in ```v```.
+   * ```v *= e``` multiplies the value of ```e``` with that of ```v``` and stores the result in ```v```.
+   * ```v /= e``` divides the value of ```v``` by that of ```e``` and stores the result in ```v```.
+   * ```v %= e``` computes the remainder when the value of ```v``` is divided by that of ```e``` and stores the result in ```v```.
+* C's compound assignment operators, like the simple assignment operator, are right-associative.
+   * ```i += j += k``` is equivalent to ```i += (j += k)```.
+* Assuming ```v``` is a variable and ```e``` is an expression, ```v *= e``` is not necessarily equivalent to ```v = v * e``` since we have to account for operator precedence. If ```e``` is equal to ```i + j``` for example, we can clearly see ```v *= i + j``` is not equivalent to ```v = v * i + j``` since the ```*``` takes precedence over the binary ```+``` operator. Enclosing ```i + j``` in parentheses would solve this issue however.
+* The same can be said for ```+=``` and other compound operators especially when their left operand has side effects.
+   * ```array[i++] += 1``` is a classic example of this.
+
 ## ➕ Increment And Decrement Operators ➖
 
 ## :gear: Expression Evaluation
