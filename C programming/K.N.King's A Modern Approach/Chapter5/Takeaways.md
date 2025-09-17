@@ -54,6 +54,74 @@
 
 ## :twisted_rightwards_arrows: The if Statement
 
+* C's ```if``` statement allows a program to selectively execute a statement depending on whether or not an expression is true.
+* In its simplest form, C's ```if``` statement looks like this: ```if(expression) statement```.
+   * The parentheses around the expression are mandatory and are part of the ```if``` statement's syntax.
+   * Some other programming languages like Pascal add a keyword like ```then``` after the expression. C does not do that.
+   * When such a statement is executed, the expression between parentheses is evaluated. If it's nonzero (true), the subsequent statement will be executed.
+* One of C's most common programming mistakes is confusing the equal to operator ```==``` with the assignment operator ```=``` inside an ```if``` statement's expression. The confusion probably stems from the fact that ```=``` denotes the equality operator in mathematics.
+   * ```if(i == 0)``` tests whether ```i``` is equal to ```0```.
+   * ```if(i = 0)``` assigns ```0``` to ```i```, fetches the resulting value since ```i = 0``` is an expression, and tests whether that value is nonzero. This ```if``` statement's condition will always evaluate to false.
+* Just like in other programming languages, we can use De Morgan's law to find the equivalent of a negated logical expression.
+   * ```if(!(a && b))``` is equivalent to ```if(!a || !b)```.
+   * ```if(!(a || b))``` is equivalent to ```if(!a && !b)```.
+* C expects a single statement to be executed if the expression enclosed in parentheses is true.
+* If we want multiple statements to be executed in response to an ```if``` expression evaluating to true, we can enclose them in braces ```{statements}``` to force the compiler to treat them as a single statement. This kind of statement is called a "compound statement".
+* Each statement inside a compound statement needs to end in a semicolon, but the compound statement itself does not.
+* An ```if``` statement used with a compound statement would look something like this:
+```c
+if(i % 2 == 0) {
+  printf("i is even, divide by 2");
+  i /= 2;
+}
+```
+* ```if``` statements in C can have an ```else``` clause. Such ```if``` statements look like this: ```if(expression) statement else statement```.
+* The statement following the word ```else``` is executed if the expression enclosed in parentheses is false.
+* Because C's syntax is mostly whitespace-agnostic and only uses whitespaces as token separators, the word ```else``` can be placed in different positions (aligned with the word ```if```, on the same line as the word ```if```...). This makes no difference functionally and is only a matter of style.
+* C imposes no restrictions on the type of statements in an ```if``` statement.
+* ```if``` statements can be nested inside each other to any depth. C programmers will usually align each ```if``` with its matching ```else``` and indent the statements in each to make sure the cascading ```if``` logic is discernible.
+* Some C programmers use compound statements with ```if``` and ```else``` clauses even when they're not required. This is a matter of style as well and makes no functional difference.
+* An ```if``` statement that has another ```if``` statement nested inside its ```else``` clause (and so on ad infinitum) is called a cascaded ```if``` statement.
+* Cascaded ```if``` statements are used to conduct a series of tests. For this reason, C programmers usually don't indent a cascaded ```if``` statement's nested ```if``` statements and align all of them with the original ```if```.
+```c
+if(expression)
+   statement
+else if (expression)
+   statement
+...
+else if(expression)
+   statement
+else
+   statement
+```
+* The last ```else``` clause in a cascaded ```if``` statement is not mandatory.
+* The excessive nesting of ```if``` statements can make a program hard to read. Correctly indenting ```if``` and ```else``` clauses could help make it a bit more readable.
+* The "dangling else" problem is notorious when it comes to nesting if statements. This problem arises when a programmer matches an ```else``` clause with the wrong ```if``` clause.
+* C abides by a rule stating that an ```else``` clause is always matched with the nearest ```if``` clause that is yet to be paired with an ```else```.
+* Using compound statements with all ```if``` and ```else``` clauses can help avoid the dangling else problem.
+* Just like C's ```if``` statement allows a program to perform one of two actions depending on the value of a condition, C provides an operator that allows an expression to produce one of two values depending on the value of an expression. This operator is called the "conditional operator".
+* C's conditional operator requires two symbols, ```?``` and ```:```, that must be used in tandem.
+* Assuming ```expression1```, ```expression2``` and ```expression3``` are three expressions of any type, the conditional operator is used in the following manner:
+   * ```expression1 ? expression2 : expression3```.
+* C's conditional operator produces a type of expression known as "a conditional expression".
+* C's conditional operator requires three operands which makes it the only ternary operator in the entire C programming language.
+* A conditional expression like ```expression1 ? expression2 : expression3``` is evaluated in stages.
+   * ```expression1``` is evaluated first.
+   * If ```expression1``` is true, ```expression2``` is evaluated and its value is the value of the entire conditional expression.
+   * If ```expression1``` is false, ```expression3``` is evaluated and its value is the value of the entire conditional expression.
+* C's conditional operator has a higher level of precedence than C's assignment operators.
+* C's conditional operator has a lower level of precedence compared to all other operators discussed so far (arithmetic operators, increment/decrement operators, relational operators, equality operators and logical operators).
+* Conditional expressions are most commonly used in function return statements, printf calls and macro definitions.
+* C89 does not provide a boolean type. C programmers have found several ways to work around this deficiency:
+   * Using integer variables instead.
+   * Defining preprocessor macros like ```#define TRUE 1``` and ```#define FALSE 0```.
+   * Defining a makeshift bool type using preprocessor macros ```#define BOOL int```.
+* C99 provides a boolean type ```_Bool```.
+* ```_Bool``` is just an unsigned integer type in disguise.
+* A ```_Bool``` variable in C99 can only be assigned the values ```0``` and ```1```. Any nonzero value assigned to a ```_Bool``` variable will be considered ```1```.
+* Arithmetic can be performed on ```_Bool``` variables.
+* C99 extends C's standard library with new headers including ```<stdbool.h>```. This header defines the ```bool``` macro that stands for ```_Bool``` and the ```true``` and ```false``` macros that stand for ```1``` and ```0``` respectively.
+
 ## :question: The switch Statement
 
 ## :game_die: Miscellaneous
