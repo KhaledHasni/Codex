@@ -124,4 +124,42 @@ else
 
 ## :question: The switch Statement
 
+* Testing an expression against a series of values can be done using a cascaded ```if``` statement, or more conveniently using a ```switch``` statement.
+* C's ```switch``` statement is arguably easier to read than a cascaded ```if``` statement and becomes more efficient as the number of test cases increases.
+* C's ```switch``` statement in its most common form looks like this:
+```c
+switch(expression) {
+   case constant_expression: statements
+   ...
+   case constant_expression: statements
+   default: statements
+}
+```
+* C's ```switch``` statement contains several components:
+   * The controlling expression.
+      * This is the expression enclosed in parentheses.
+      * C requires it to be an integer expression.
+      * Characters in C are treated as integers which makes them eligible.
+      * Floating-point numbers, strings and other types are not allowed.
+   * Case labels.
+      * This is the ```case constant_expression:``` we see in the beginning of each case.
+      * A constant expression must not contain variables or function calls, only constants and macros that stand for constants.
+      * The constant expression must evaluate to an integer (including characters).
+   * Statements.
+      * C does not require that a single statement follow a case label so no compound statement is needed.
+      * Any number of statements can follow a case label.
+   * The ```default``` case.
+      * Applied if the controlling statement doesn't match any other case label.
+      * Not mandatory.
+      * If it's missing and the controlling expression doesn't match any other case label, the whole ```switch``` statement is essentially skipped.
+* C's ```switch``` statement essentially performs a conditional jump based on the value of the controlling expression.
+* C does not allow duplicate case labels in a ```switch``` statement.
+* The order in which case labels appear in a ```switch``` statement is irrelevant.
+* C requires that each case label contain exactly one constant expression.
+* A group of statements in a ```switch``` statement can be preceded by multiple case labels. This technique is known as "case fall-through".
+* C's switch statement cannot test whether the controlling expression falls within a range of values.
+* The last statement in a group of statements following a case label is usually the ```break``` statement.
+* The ```break``` statement transfers control out of the ```switch``` statement entirely and to the first statement following it. Without it, control will fall through to the first statement in the next case, bypassing its case label entirely.
+* The last case in a ```switch``` statement does not need a ```break``` statement.
+
 ## :game_die: Miscellaneous
