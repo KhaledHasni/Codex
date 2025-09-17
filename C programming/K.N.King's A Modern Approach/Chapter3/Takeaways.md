@@ -20,7 +20,7 @@
    * Ordinary characters: Copied as is to the output line.
    * Conversion specifications: Begin with the ```%``` character and are placeholders for the values to be inserted in the format string.
 * The characters following ```%``` in a conversion specification provide information on how the value to be inserted is converted from its binary form to printed form.
-* As an example, the %d conversion specification instructs ```printf``` to convert an integer value from its binary form to a string of decimal digits.
+* As an example, the ```%d``` conversion specification instructs ```printf``` to convert an integer value from its binary form to a string of decimal digits.
 * The values are inserted in the format string in the order they are provided to ```printf```.
 * C compilers can't detect a mismatch between the number of conversion specifications in a ```printf``` format string and the number of provided values.
 * If more conversion specifications than values are provided, the extra conversion specifications will be replaced by meaningless values.
@@ -92,14 +92,14 @@
 * ```scanf```'s behavior is in many ways controlled by the format string.
 * When called, ```scanf``` will process the format string starting from the left.
 * When it encounters a conversion specification, it will try to match it with an appropriate item read from the input stream of characters.
-* ```scanf``` has the built-in ability to skip whitespace characters (space, horizontaltab, vertical tab, form-feed and new-line) if necessary. This is the case for example when scanning for the beginning of numbers in a stream of input characters.
+* ```scanf``` has the built-in ability to skip whitespace characters (space, horizontal tab, vertical tab, form-feed and new-line) if necessary. This is the case for example when scanning for the beginning of numbers in a stream of input characters.
 * ```scanf``` will stop reading an item as soon as it encounters a character that can't possibly belong to said item. That character will be returned to the input stream to be processed by the next input item or the next ```scanf``` call.
 * If an input item was read successfully, ```scanf``` will continue processing the format string.
 * If ```scanf``` fails to read an input item, it immediately returns without processing the rest of the format string or input data.
 * A new-line character at the end of an input stream is put back for the next call of ```scanf``` to handle.
 * ```scanf``` abides by several rules to identify numbers in an input stream of characters:
    * Integers:
-      * Looks for leading a digit, plus sign or minus sign.
+      * Looks for a leading digit, plus sign or minus sign.
       * Reads subsequent adjacent digits until it reaches a nondigit.
    * Floating-point numbers:
       * Looks for a leading digit, plus or minus sign.

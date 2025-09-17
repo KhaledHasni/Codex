@@ -34,13 +34,13 @@ deficiencies:
 * This state of affairs was threatening what C had set out to establish from the onset, which was to create portable software.
 * The need for a clear, concise and unambiguous standard for the language became very clear.
 * The American National Standards Institute (ANSI for short) started working on creating a US C standard in 1983, finished it in 1988 and it was formally approved 
-in 1989. Largely the same standard with slight editorial amendments was approved by the International Standards Organization (ISO) in 1990. This version of language 
+in 1989. Largely the same standard with slight editorial amendments was approved by the International Standards Organization (ISO) in 1990. This version of the language 
 was called C89 or sometimes C90 in contrast to the earlier not standardized version known colloquially as K&R C.
 * C continued to evolve past this point and in 1995, it underwent small changes in the form of an amendment called amendment 1.
 * In 1999, C underwent its most significant change to date in the form of a new standard produced by ISO. This new version of the language was called C99.
 * The line between what is ISO C, ANSI C and what is not became blurry ever since C99 came into the picture. But it's safe to say that when someone refers to ANSI C 
 they most likely mean C89. When they refer to ISO C, they most likely mean C99 or the latest C standard released by ISO.
-* C influenced a lot of modern programming languages. Some examples of such languages include:
+* C influenced a lot of modern programming languages. Examples of such languages include:
    * C++: Inherited all the features of C and added object-oriented features and better data structure handling.
    * Java: Based on C++.
    * C#: Based on C++ and Java.
@@ -74,7 +74,7 @@ error-checking policy like many other languages try to do.
    * UNIX: C is particularly powerful when used with UNIX or one of its variants including Linux.
 * C has some weaknesses that usually stem from its closeness to the machine:
    * C programs can be error-prone: The fact that C is both permissive and flexible can be a source of trouble. Some of C's most frustrating bugs and errors are
-usually not detected by compilers, rather they show up at runtime in the form of unexpected behavior. In this respect, C is much like Assembly.
+usually not detected by compilers, rather they show up at runtime in the form of unexpected behaviour. In this respect, C is much like Assembly.
    * C programs can be hard to read: It's common for a C program not to be understood by a reader, although it's perfectly obvious what it does to the person who
 wrote it. Programmers trying to be cheeky and clever, of course, doesn't help either.
    * C programs can be hard to change: C doesn't offer classes or packages or other containment concepts that break down programs into smaller, more manageable
