@@ -4,7 +4,7 @@
   <a href="#repeat_one-the-do-statement">The do Statement</a> •
   <a href="#repeat-the-for-statement">The for Statement</a> •
   <a href="#stop_sign-exiting-from-a-loop"> Exiting From A Loop</a> •
-  <a href="#hole-the-null-statement">The NULL Statement</a> •
+  <a href="#hole-the-null-statement">The null Statement</a> •
   <a href="#game_die-miscellaneous"> Miscellaneous</a>
 </p>
 
@@ -120,6 +120,14 @@ while(expression2){
    * Leaving nested loops.
    * Leaving ```switch``` statements nested in loops or vice versa.
 
-## :hole: The NULL Statement
+## :hole: The null Statement
+
+* A C statement that doesn't contain any symbols apart from the trailing semicolon is called the null statement.
+* The null statement does nothing and is typically used in loops whose bodies are empty.
+   * ```for(i = 0; i < n; i++);```. The trailing semicolon here is the null statement which indicates in this case that the loop body is empty.
+* C programmers will usually place the null statement on a line by itself to make it obvious.
+* Inadvertently placing a semicolon after the parentheses in an ```if```, ```for``` or ```while``` statement creates a null statement, leading to unexpected behavior.
+   * The ```if``` statement's "body" is executed irrespective of the value of its controlling expression.
+   * The ```for``` and ```while``` loops "bodies" may never be executed if an infinite loop was inadvertently created, or they may only be executed once if the loops eventually terminate.
 
 ## :game_die: Miscellaneous
