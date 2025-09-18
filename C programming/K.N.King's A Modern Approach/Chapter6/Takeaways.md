@@ -19,7 +19,7 @@
 * C requires the ```while``` loop's body to be a single statement. We can work around this by enclosing multiple statements in a pair of braces and using that as the loop body. This kind of statement is called a "compound statement".
 * When a ```while``` loop terminates, the controlling expression's value is ```false```.
 * A ```while``` loop's body may not be executed at all if the controlling expression evaluates to ```false``` when the loop is first entered.
-* A ```while``` loop will never terminate if its controlling expression never evaluates to ```false```, unless its body contains a statement that transfers control out of the loop such as ```goto```, ```break``` and ```return``` or calls a function that causes the program to terminate.
+* A ```while``` loop will never terminate if its controlling expression never evaluates to ```false```, unless its body contains a statement that transfers control out of the loop such as ```goto```, ```break``` or ```return``` or calls a function that causes the program to terminate.
 
 ## :repeat_one: The do Statement
 
@@ -65,16 +65,16 @@ while(expression2){
    * "Off-by-one" errors.
    * Writing ```i == n``` as the controlling expression which could lead to the immediate termination of the loop as soon as it starts executing.
 * ```for``` loops do not require all three controlling expressions to be used. In fact, we can even write a ```for``` loop with none of the three controlling expressions.
-* The two semicolons inside the for loop's parentheses are mandatory and must always be present, even if one or more expressions are omitted. They are part of the ```for``` loop's syntax.
+* The two semicolons inside the ```for``` loop's parentheses are mandatory and must always be present, even if one or more expressions are omitted. They are part of the ```for``` loop's syntax.
 * ```expression1``` can be omitted if we don't need to execute an expression statement before the loop is entered.
 * If ```expression3``` is omitted, it becomes the loop body's responsibility to ensure the controlling expression eventually evaluates to ```false```.
-* If ```expression1``` and ```expression3``` are both omitted, the resulting ```for ``` loop is just a ```while``` loop in disguise.
+* If ```expression1``` and ```expression3``` are both omitted, the resulting ```for``` loop is just a ```while``` loop in disguise.
 * If ```expression2``` is omitted, its value will default to ```true```, and as a result, the loop will never terminate unless its body contains a statement that transfers control out of the loop, or calls a function that terminates the program.
-* Some C programmers use the following idiomatic for loop to create an infinite loop: ```for(;;)```.
+* Some C programmers use the following idiomatic ```for``` loop to create an infinite loop: ```for(;;)```.
 * C99 offers the possibility to use the first expression in a ```for``` loop to declare and initialize a variable.
    * ```for(int i = 0; i < n; i++)```
       * ```i``` doesn't need to be declared prior to this.
-      * If another variable called ```i``` is still within scope, ```i``` declared in the loop will supersede it.
+      * If another variable called ```i``` is still within scope, ```i``` declared in the loop will supersede it inside the loop's body.
       * ```i``` is only visible inside the loop's body and can't be referenced anymore once control is transferred outside the loop.
 * C99 allows declaring more than one variable in a ```for``` loop's first expression, provided that all variables have the same type.
    * ```for(int i = 0, j = 1; i < n; i++)```.
@@ -103,9 +103,10 @@ while(expression2){
 * The ```do``` loop's exit point comes after its body.
 * The ```break``` statement can be used to establish an exit point in the middle of a loop's body.
 * The ```break``` statement can be used to create a loop with more than one exit point.
-* The ```break``` statement transfers control out of the innermost enclosing ```for```, ```do```, ```while``` and ```switch``` statement. If more than one of these statements are nested, the ```break``` statement can only escape a single level of nesting.
+* The ```break``` statement transfers control out of the innermost enclosing ```for```, ```do```, ```while``` or ```switch``` statement. If more than one of these statements are nested, the ```break``` statement can only escape a single level of nesting.
 * In contrast to the ```break``` statement which transfers control to a point right past the end of the enclosing loop or ```switch``` statement, the ```continue``` statement transfers control to a point right before the end of the enclosing loop body, keeping control within the loop.
 * The ```continue``` statement can only be used with loops.
+* In practice, the ```continue``` statement is used to skip the rest of a loop's body in the current loop iteration.
 * ```break``` and ```continue``` are two examples of restricted jump statements that transfer control from one point in the program to another particular target point.
 * The ```goto``` statement is a jump statement that allows a program to transfer control from one point in the program to any other statement in the program provided that:
    * The target statement has a ```label```.
@@ -128,6 +129,32 @@ while(expression2){
 * C programmers will usually place the null statement on a line by itself to make it obvious.
 * Inadvertently placing a semicolon after the parentheses in an ```if```, ```for``` or ```while``` statement creates a null statement, leading to unexpected behavior.
    * The ```if``` statement's "body" is executed irrespective of the value of its controlling expression.
-   * The ```for``` and ```while``` loops "bodies" may never be executed if an infinite loop was inadvertently created, or they may only be executed once if the loops eventually terminate.
+   * The ```for``` and ```while``` loops' "bodies" may never be executed if an infinite loop was inadvertently created, or they may only be executed once if the loops eventually terminate.
 
 ## :game_die: Miscellaneous
+
+* a ```while``` loop can usually be turned into a ```for``` loop using a fairly standard pattern. This pattern usually breaks however, when the ```while``` loop's body contains a jump statement.
+* An infinite loop can be created using a ```while``` statement: ```while(1)``` or a ```for``` statement: ```for(;;)```. C programmers prefer the latter since some older C compilers would test the constant ```1``` expression in every iteration undermining the loop's efficiency.
+* Excessive use of the ```goto``` statement can make a program difficult to read for a variety of reasons:
+   * The ```goto``` statement can transfer control either forward or backward, which can make it difficult to follow the flow of control.
+   * A statement preceded by a label can be reached either by falling through from the previous statement or by executing a ```goto``` statement.
+   * A program that jumps back and forth can quickly become unmaintainable.
+* The null statement can be used anywhere a statement is allowed. In practice, it's usually used for two purposes only and they're both fairly rare:
+   * Indicating that a loop body is empty.
+   * Creating a label at the end of a block such as a compound statement or function body. A label requires a statement after the colon ```:```, but since we're only creating the label to mark the end of the block, we can use a null statement.
+* Some C programmers use different techniques to highlight their empty loop bodies:
+   * The null statement.
+   ```c
+   for(i = 0; i < n; i++)
+      ;
+   ```
+   * A dummy ```continue``` statement.
+   ```c
+   for(i = 0; i < n; i++)
+      continue;
+   ```
+   * An empty compound statement.
+   ```c
+   for(i = 0; i < n; i++)
+      {}
+   ```
