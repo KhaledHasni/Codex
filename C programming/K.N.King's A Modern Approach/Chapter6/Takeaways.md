@@ -99,6 +99,27 @@ while(expression2){
 
 ## :stop_sign: Exiting From A Loop
 
+* The ```while``` and ```for``` loops' exit points come before their bodies.
+* The ```do``` loop's exit point comes after its body.
+* The ```break``` statement can be used to establish an exit point in the middle of a loop's body.
+* The ```break``` statement can be used to create a loop with more than one exit point.
+* The ```break``` statement transfers control out of the innermost enclosing ```for```, ```do```, ```while``` and ```switch``` statement. If more than one of these statements are nested, the ```break``` statement can only escape a single level of nesting.
+* In contrast to the ```break``` statement which transfers control to a point right past the end of the enclosing loop or ```switch``` statement, the ```continue``` statement transfers control to a point right before the end of the enclosing loop body, keeping control within the loop.
+* The ```continue``` statement can only be used with loops.
+* ```break``` and ```continue``` are two examples of restricted jump statements that transfer control from one point in the program to another particular target point.
+* The ```goto``` statement is a jump statement that allows a program to transfer control from one point in the program to any other statement in the program provided that:
+   * The target statement has a ```label```.
+   * The source and target points are contained in the same function.
+* A ```label``` is just an identifier at the beginning of the statement followed by a colon ```:```.
+   * ```label: statement```.
+* A statement may have more than one label.
+* C99 requires a ```goto``` statement not to skip the declaration of a variable-length array (a concept that will be discussed in later chapters).
+* The ```goto``` statement has the following format: ```goto label```.
+* The ```goto``` statement is not frequently used in modern C programming. The ```break```, ```continue```, ```return``` statements and the ```exit``` function are in most cases more than enough to handle situations where control transfer is needed. That being said, there are situations where the ```goto``` statement can still be useful:
+   * Early function exit, commonly known as "guard clause".
+   * Leaving nested loops.
+   * Leaving ```switch``` statements nested in loops or vice versa.
+
 ## :hole: The NULL Statement
 
 ## :game_die: Miscellaneous
