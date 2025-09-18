@@ -37,6 +37,66 @@
 
 ## :repeat: The for Statement
 
+* C's ```for``` statement has the following form: ```for(expression1; expression2; expression3) statement```.
+   * ```expression1```, ```expression2``` and ```expression3``` are three expressions.
+   * ```statement``` is called the loop body.
+* When a ```for``` statement is executed, ```expression1``` is first evaluated, followed by ```expression2```. If ```expression2``` evaluates to ```false```, the loop body is skipped and control is transferred to the first statement after the ```for``` loop. If ```expression2``` evaluates to ```true```, the loop body is executed, ```expression3``` is evaluated, then ```expression2``` is evaluated again. This process (evaluating ```expression2```, executing the loop body then evaluating ```expression3``` continues until ```expression2``` evaluates to ```false```).
+* In most cases, a ```for``` loop can be rewritten using a ```while``` loop using the following pattern:
+```c
+expression1;
+while(expression2){
+   statement;
+   expression3;
+}
+```
+   * ```expression1``` is an initialization step that occurs once before entering the loop.
+   * ```expression2``` controls the loop's termination.
+   * ```expression3``` is executed at the end of each loop iteration.
+* Examining a ```for``` loop's equivalent ```while``` statement reveals several facts:
+   * ```expression1``` and ```expression3``` are executed as expression statements in the equivalent ```while``` loop.
+   * This means ```expression1``` and ```expression3``` are only useful for their side effects.
+   * For this reason, ```expression1``` and ```expression3``` are usually assignments and increment/decrement expressions respectively.
+* C's ```for``` loop is usually the go-to choice when writing loops that count up or down.
+   * ```for(i = 0; i < n; i++)``` counts up from ```0``` to ```n - 1```.
+   * ```for(i = 1; i <= n; i++)``` counts up from ```1``` to ```n```.
+   * ```for(i = n; i > 0; i--)``` counts down from ```n``` to ```1```.
+   * ```for(i = n - 1; i >= 0; i--)``` counts down from ```n - 1``` to ```0```.
+* Common mistakes beginner C programmers make when writing ```for``` statements include:
+   * "Off-by-one" errors.
+   * Writing ```i == n``` as the controlling expression which could lead to the immediate termination of the loop as soon as it starts executing.
+* ```for``` loops do not require all three controlling expressions to be used. In fact, we can even write a ```for``` loop with none of the three controlling expressions.
+* The two semicolons inside the for loop's parentheses are mandatory and must always be present, even if one or more expressions are omitted. They are part of the ```for``` loop's syntax.
+* ```expression1``` can be omitted if we don't need to execute an expression statement before the loop is entered.
+* If ```expression3``` is omitted, it becomes the loop body's responsibility to ensure the controlling expression eventually evaluates to ```false```.
+* If ```expression1``` and ```expression3``` are both omitted, the resulting ```for ``` loop is just a ```while``` loop in disguise.
+* If ```expression2``` is omitted, its value will default to ```true```, and as a result, the loop will never terminate unless its body contains a statement that transfers control out of the loop, or calls a function that terminates the program.
+* Some C programmers use the following idiomatic for loop to create an infinite loop: ```for(;;)```.
+* C99 offers the possibility to use the first expression in a ```for``` loop to declare and initialize a variable.
+   * ```for(int i = 0; i < n; i++)```
+      * ```i``` doesn't need to be declared prior to this.
+      * If another variable called ```i``` is still within scope, ```i``` declared in the loop will supersede it.
+      * ```i``` is only visible inside the loop's body and can't be referenced anymore once control is transferred outside the loop.
+* C99 allows declaring more than one variable in a ```for``` loop's first expression, provided that all variables have the same type.
+   * ```for(int i = 0, j = 1; i < n; i++)```.
+* C99 also allows incrementing/decrementing more than one variable in a ```for``` loop's third expression.
+   * ```for(int i = 0; i < n; i++, j++)```.
+* C's comma operator ```,``` can be used to chain together a sequence of expressions to form what is called a "comma expression".
+   * ```expression1, expression2```.
+      * ```expression1``` and ```expression2``` are any two expressions.
+      * This comma expression is evaluated in two stages:
+         * ```expression1``` is evaluated first, and its value is discarded.
+         * ```expression2``` is then evaluated, and its value is the value of the whole comma expression.
+      * Since ```expression1```'s value is discarded, it should always have a side effect, otherwise it will essentially be useless.
+* C's comma operator ```,``` has the lowest level of precedence among all operators in the entire C programming language.
+* C's comma operator ```,``` is left associative.
+   * ```++i, ++j, ++k``` is equivalent to ```(++i, ++j), ++k```.
+      * ```i``` will be incremented and its value discarded. The change to ```i``` is permanent, however.
+      * ```j``` will then be incremented, and its new value will be the value of the entire comma expression enclosed in parentheses.
+      * ```k``` will be incremented next, and its new value will be the value of the entire expression.
+* The comma operator allows us to have more than one expression anywhere a single expression is required. From this standpoint, it is much like the compound statement which allows us to have multiple statements anywhere a single statement is required.
+* The comma operator has been part of the C programming language since the C89 ANSI standard.
+* The three controlling expressions in a ```for``` loop are customarily used to initialize, test and update the same variable. However, C does not require this. The three expressions can be unrelated and even involve three different variables.
+
 ## :stop_sign: Exiting From A Loop
 
 ## :hole: The NULL Statement
