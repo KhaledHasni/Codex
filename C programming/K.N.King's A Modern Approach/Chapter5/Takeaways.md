@@ -163,3 +163,55 @@ switch(expression) {
 * The last case in a ```switch``` statement does not need a ```break``` statement.
 
 ## :game_die: Miscellaneous
+
+* Some C programmers use a trick to mitigate the risk of inadvertently confusing the assignment ```=``` and equality ```==``` operators in ```if``` statement expressions. Instead of writing ```if(i == 2)```, they would routinely write ```if(2 == i)```. In the event that ```==``` is mistakenly written as ```=``` in the latter case, the compiler will generate an error since C requires the left operand of the assignment operator to be an lvalue. In other words, we can't assign a value to the constant ```2```. This trick has one major deficiency: It can only work when one of the operands is not an lvalue.
+* Some compilers are designed to check for dubious uses of the assignment operator in ```if``` statement conditions. GCC for example will perform this check if ```-Wparentheses``` or ```-Wall``` is selected.
+* In GCC, adding an extra set of parentheses around an ```if``` statement's condition will suppress warnings caused by the assignment operator.
+* There are four common compound statement indentation and brace placement styles among C programmers.
+   * The K&R style.
+      * Made popular by Kernighan and Ritchie's "The C programming language".
+      * The left brace is not placed on its own line.
+      * Was adopted by Java programmers and is arguably the most popular style among Java programmers.
+      * An ```if``` statement using this style will look something like this:
+      ```c
+      if(i % 2 == 0) {
+         printf("i is even, divide by 2");
+         i /= 2;
+      }
+      ```
+   * The Allman style.
+      * Named after Eric Allman, author of sendmail and other UNIX utilities.
+      * Places each brace on its own line.
+      * An ```if``` statement using this style will look something like this:
+      ```c
+      if(i % 2 == 0)
+      {
+         printf("i is even, divide by 2");
+         i /= 2;
+      }
+      ```
+   * The Whitesmiths style.
+      * Made popular by the Whitesmiths C compiler.
+      * Places each brace on its own line and indents the pair of them to the same level of the statements they enclose.
+      * An ```if``` statement using this style will look something like this:
+      ```c
+      if(i % 2 == 0)
+         {
+         printf("i is even, divide by 2");
+         i /= 2;
+         }
+      ```
+   * The GNU style.
+      * Made popular by the GNU project's software.
+      * Places each brace on its own line, indents the pair of them, then further indents the statements they enclose.
+      * An ```if``` statement using this style will look something like this:
+      ```c
+      if(i % 2 == 0)
+         {
+            printf("i is even, divide by 2");
+            i /= 2;
+         }
+      ```
+* Assuming ```i``` and ```f``` are an integer and a floating-point variable respectively, the value of the conditional expression ```expression ? i : f``` is of type float (```f``` if ```expression``` is false and ```i``` after conversion to float if ```expression``` is true).
+* The C89 standard states that names beginning with an underscore ```_``` followed by an uppercase letter are reserved for future use and therefore cannot be used by programmers. This explains why the name ```_Bool``` was chosen for C99's boolean type since it's guaranteed not to have been used by previous programs. This ensures these older programs can continue to be compiled using newer C99-compliant compilers.
+* The switch statement allows for case labels not to be preceded by the word case (the ```default``` label is a good example of this). For this reason, a programmer must make sure not to include typos when writing the ```default``` label in a switch statement. If they do, the compiler will fail to detect that mistake, interpreting it as just another case label.
