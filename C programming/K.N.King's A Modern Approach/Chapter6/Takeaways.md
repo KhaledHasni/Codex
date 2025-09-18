@@ -23,6 +23,18 @@
 
 ## :repeat_one: The do Statement
 
+* C's ```do``` statement is basically a ```while``` statement where the controlling expression is evaluated after the loop body.
+* The ```do``` statement has the following form: ```do statement while(expression);```.
+   * The expression enclosed in parentheses is called "the controlling expression".
+   * The statement after the word ```do``` is called "the loop body".
+   * The parentheses around the controlling expression are mandatory and are part of the ```do``` loop's syntax.
+* C requires the ```do``` loop's body to be a single statement (possibly a compound statement).
+* When a ```do``` statement is executed, the loop body is executed first, then the controlling expression is evaluated. If the controlling expression evaluates to ```true```, the loop body is executed again. This process (executing the loop body then evaluating the controlling expression) continues until the controlling expression evaluates to ```false```, at which point the loop terminates.
+* C's ```do``` and ```while``` statements have a lot in common. The main difference between the two is:
+   * The ```do``` loop's body is guaranteed to be executed at least once.
+   * The ```while``` loop's body may not be executed at all if the controlling expression is ```false``` initially.
+* It's often a good idea to enclose the ```do``` loop's body in braces even when they're not strictly necessary, to avoid confusion with a ```while``` loop.
+
 ## :repeat: The for Statement
 
 ## :stop_sign: Exiting From A Loop
