@@ -68,6 +68,16 @@
 
 ## :link: Pointer Assignment
 
+* C's simple assignment operator ```=``` can be used to copy pointers provided that they have the same type.
+* Assuming ```a``` and ```b``` are integer variables and ```p``` and ```q``` are pointer variables capable of pointing to objects of type ```int```:
+   * ```p = &a;``` is an example of pointer assignment. This copies the address of ```a``` into ```p```, making ```p``` point to ```a```.
+   * ```q = p;``` is an example of pointer assignment. This copies the content of ```p``` into ```q```, making ```p``` and ```q``` point to the same object.
+   * Once ```p``` and ```q``` point to the same object, assigning a value to ```*p``` or ```*q``` will change the value of the object pointed to by ```p``` and ```q```, which is ```a``` in this case.
+* C allows any number of pointer variables to point to the same object.
+* The statement ```*q = *p;``` copies the value pointed to by ```p``` into the object pointed to by ```q```.
+   * ```q = p;``` makes both ```p``` and ```q``` point to the same object in memory.
+   * ```*q = *p;``` makes both ```p``` and ```q``` point to objects in memory containing the same data.
+
 ## :point_right: Pointers As Arguments
 
 ## :point_left: Pointers As Return Values
