@@ -80,6 +80,30 @@
 
 ## :point_right: Pointers As Arguments
 
+* Arguments to functions in C are passed by value. In other words, a variable supplied as an argument to a function is protected against change.
+* Pointers can be used if we want a function to permanently change the value of a variable passed as an argument. Assuming ```a``` is a variable whose value we want to change using a function ```f```:
+   * If we pass ```a``` as an argument to ```f```, ```a``` will be passed by value. In other words, its content will be copied into the corresponding function parameter. The value of ```a``` will remain unchanged.
+   * Suppose we pass a pointer to ```a``` (i.e ```&a```) as an argument to ```f```, and declare the corresponding function parameter to be a pointer ```p```.
+   Once the function is invoked, ```p``` will contain ```&a``` and ```*p``` will be an alias for ```a```. Any change to ```*p``` will be mirrored in ```a```.
+* ```scanf``` is an example of a C function that expects a pointer argument. Assuming ```a``` is an integer variable:
+   * ```scanf("%d", &a);``` reads characters from standard input, attempts to convert them to an integer that it stores in ```a```. The address operator ```&``` applied to ```a``` is mandatory here. ```scanf``` needs to know where to store the integer it reads. Without the ```&``` operator, we would be supplying ```scanf``` with the value of ```a``` instead.
+* If a function has a pointer parameter, the address operator ```&``` doesn't necessarily have to precede the name of its corresponding argument. Assuming ```f``` is a function that expects a single pointer argument and ```p``` is a pointer variable:
+   * ```f(p);``` is a valid call as long as ```p```'s type matches that of ```f```'s parameter.
+* Passing a value to a function that expects a pointer is arguably one of the most dangerous things we can do in C.
+   * Once such a function is called, it has no way of knowing whether the value passed as argument is a valid pointer or not.
+   * Since it can't verify this, the function will "take our word for it" and use the provided value as though it were a pointer.
+   * An attempt to dereference this pointer or change the value it points to is particularly dangerous since we don't know the content of the address we're accessing.
+   * C compilers will usually detect a mismatch between the type of the passed argument and the expected parameter based on the function's prototype.
+   * ```scanf``` is a particularly dangerous function to use since failing to pass a pointer often goes undetected.
+* Passing a pointer argument to a function can be done for reasons other than wanting to change the object the pointer is pointing to inside the function. One such reason is efficiency. In fact, a significant amount of time and space are wasted copying sizable arguments.
+* C allows passing a pointer argument while still ensuring the function cannot modify the object it points to. This can be done by adding the keyword ```const``` in the corresponding parameter's declaration.
+   * ```f(const int *p)```.
+      * In this example, ```f``` is a function that expects a pointer to a constant integer.
+      * The parameter ```p``` is a pointer to a constant integer.
+      * If a pointer to an integer variable ```a``` is passed to ```f```, ```a``` will be protected against change inside ```f```'s body.
+      * Any attempt to modify the value of ```a``` will produce a compilation error.
+      * The pointer argument itself can still be changed, however. In other words, it can be made to point to a different object.
+
 ## :point_left: Pointers As Return Values
 
 ## :game_die: Miscellaneous
