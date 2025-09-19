@@ -102,7 +102,7 @@
       * The parameter ```p``` is a pointer to a constant integer.
       * If a pointer to an integer variable ```a``` is passed to ```f```, ```a``` will be protected against change inside ```f```'s body.
       * Any attempt to modify the value of ```a``` will produce a compilation error.
-      * The pointer argument itself can still be changed, however. In other words, it can be made to point to a different object.
+      * The pointer argument itself can still be changed, however. In other words, it can be made to point to a different object. This won't have any impact on the pointer argument once the function returns since only a copy was supplied to the function.
 
 ## :point_left: Pointers As Return Values
 
@@ -117,3 +117,17 @@
 * A function that takes an array argument can return a pointer to an element within that array.
 
 ## :game_die: Miscellaneous
+
+* Pointers can also point to functions.
+* A common source of confusion for people new to C is the use of the ```*``` symbol. This symbol can mean different things depending on the context.
+   * ```int *p = &a;``` In this declaration of a pointer variable, the ```*``` symbol is used to point out that ```p``` is a pointer variable as opposed to a regular integer variable. The ```*``` here is not the indirection operator.
+   * ```*p = a;``` In this assignment operation, the ```*``` symbol is the indirection operator used to access the object that ```p``` is pointing to.
+* The ```*``` symbol used as a unary operator in a statement is the indirection operator.
+* C allows printing the content of a pointer variable by using the conversion specification ```%p``` with the ```printf``` function.
+* There are exactly three possible combinations involving ```int```, ```const``` and ```*``` in a function parameter declaration:
+   * ```f(const int *p)```. ```p``` is a pointer to a constant integer.
+   * ```f(int const *p)```. ```p``` is a pointer to a constant integer.
+   * ```f(int * const p)```. ```p``` is a constant pointer to an integer. This is not very often used since a pointer parameter will contain a copy of the argument pointer, so there's not much reason to protect it against change.
+* If we want to protect both the pointer and the object it points to against change, we can write:
+   * ```f(int const * const p) ``` or ```f(const int * const p)```.
+* A pointer is usually just another way of saying an address but that's not always the case. That's true if addresses on the specific platform we're using are unique identifiers for the smallest unit of memory that can hold the value of a variable. For example, in most modern computers, all variables occupy at least one byte in memory, meaning that if our memory is byte-addressed, an address and a pointer will mean the same thing in this case. Alternatively, suppose we have a platform that is word-addressed with a word capable of holding 36 or 60 bits for example. If a variable requires only 6 bits to be stored, we will need to know the address of the word it's stored in and how many bits off the start of the word it's located (called the offset within the word). In this case, the pointer becomes an address + offset and not just an address.
