@@ -106,4 +106,14 @@
 
 ## :point_left: Pointers As Return Values
 
+* C allows functions to return pointers. Assuming ```f``` is a function that both expects and returns pointers to integers, its prototype will look something like this:
+   * ```int* f(int *p)```.
+* A function that returns a pointer:
+   * Can return a pointer that was passed to it as an argument.
+   * Can return a pointer to an external variable.
+   * Can return a pointer to a static local variable.
+   * Should never return a pointer to an automatic local variable. Once the function returns, such a variable will no longer exist and a pointer to it immediately becomes invalid. Some compilers may warn against this situation.
+* Pointers can be used to point to array elements, not just ordinary variables.
+* A function that takes an array argument can return a pointer to an element within that array.
+
 ## :game_die: Miscellaneous
