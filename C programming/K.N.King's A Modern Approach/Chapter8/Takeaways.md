@@ -128,3 +128,24 @@
 * A VLA defined inside a function can have a different length every time the function is called.
 
 ## :game_die: Miscellaneous
+
+* Array 0-indexing was chosen by design to simplify compilers and make array subscripting slightly faster.
+* Characters can be used as array subscripts since characters in C are treated as integers.
+* If we consider the following array declaration that contains a designated initializer:
+   * ```int a[] = {4, 8, 13, [0] = 2, 90};```.
+      * When the compiler goes through an initializer list, it continuously tracks the next element to be initialized.
+      * The next element to be initialized is usually the element following the one that was just initialized.
+      * When the compiler encounters a designator, it initializes the specified element. The next element to be initialized is then the one immediately following it.
+      * In the example above:
+         * The first element (```0``` subscript) is assigned ```4```.
+         * The second element (```1``` subscript) is assigned ```8```.
+         * The third element (```2``` subscript) is assigned ```13```.
+         * The first element (```0``` subscript) is assigned ```2```.
+         * The second element (```1``` subscript) is assigned ```90```.
+         * The provided declaration is equivalent to ```int a[] = {2, 90, 13}```.
+         * The array's length is ```3```.
+* To copy the elements of an array into another, we can use:
+   * A loop.
+   * A ```memcpy``` call which simply copies bytes from a source into a destination buffer. Assuming ```a``` and ```b``` are arrays:
+      * ```memcpy(a, b, sizeof(a));``` copies all elements from ```b``` to ```a``` provided that ```a``` and ```b``` are arrays of the same type.
+* Since the length of a VLA is computed when the program is executed, the block of memory used to store a VLA is only allocated when its declaration is reached during program execution. This explains why C99 prohibits bypassing the declaration of a VLA using jump statements like ```goto```. Had this restriction not been in place, we would risk accessing the elements of an array that was never allocated.
