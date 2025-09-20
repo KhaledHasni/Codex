@@ -38,6 +38,7 @@
    * Array of characters: The remaining elements will be assigned ```\0```.
    * Array of structures: The remaining elements will be zero-initialized member by member.
    * Array of pointers: The remaining elements will be assigned ```NULL```.
+   * Array of boolean values: The remaining elements will be assigned ```false```.
 * An array can be initialized to all zeros in the following manner:
    * ```int a[5] = {0};```.
       * An array initializer can't be empty in C.
@@ -75,6 +76,42 @@
       * It's important to bear in mind that the ```sizeof``` operator produces a value of type ```size_t``` which is an unsigned type. As a result, the whole expression ```sizeof(a) / sizeof(a[0])``` will produce a value of type ```size_t```. When compared with a signed value, it's best to cast the expression to a signed type to avoid comparing signed and unsigned values.
 
 ## :books: Multidimensional Arrays
+
+* C doesn't require an array to be one-dimensional, nor does it impose a limit on the number of dimensions it can have.
+* A two-dimensional array, also known as a matrix, is somewhat frequently used in C programs.
+   * ```int a[r][c];``` is the declaration of a 2D array containing ```r``` rows and ```c``` columns.
+   * Rows and columns are both 0-indexed.
+   * To access the element in row ```i``` and column ```j```, we can use array subscripting ```a[i][j]```.
+   * A common blunder made by beginner C programmers is writing ```a[i,j]``` instead of ```a[i][j]```. Bearing in mind that the comma operator ```,``` is used to create a comma expression whose value is the value of its second operand, ```a[i,j]``` is equivalent to ```a[j]``` which will produce the ```j```'th row in the matrix (assuming the matrix has ```j``` rows or more).
+   * ```a[i]``` produces the ```i```'th row in the array, then ```a[i][j]``` accesses the ```j```'th element in that row.
+* C stores 2D arrays in memory in row-major order. In other words, the array's first row is stored in memory as though it were a simple one-dimensional array, followed by the second row and so on.
+   * All elements are stored consecutively.
+   * The first element in a row is preceded in memory by the last element of the previous row.
+* C provides a better, more flexible way of storing multidimensional data, arrays of pointers.
+* 2D array initializers can be created by nesting one-dimensional array initializers. Each row gets its own initializer.
+   ```c
+   int a[3][4] = {{ 1,  1,  2,   3},
+                  { 5,  8, 13,  21},
+                  {34, 55, 89, 144}};
+   ```
+* Arrays with higher dimensions are initialized in the same way.
+* If a multidimensional array initializer is shorter than the length of the array, the remaining uninitialized elements will be assigned ```0```.
+* If an inner initializer is shorter than the length of a row, the rest of the elements in the row are assigned ```0```.
+* The C standard does not require the inner braces in a multidimensional array initializer. In this case, the compiler will assign the initializer's values one by one until a row is full, before moving on to the next row.
+```c
+   int a[3][4] = { 1,  1,  2,   3,
+                   5,  8, 13,  21,
+                  34, 55, 89, 144};
+   ```
+* A multidimensional array can be initialized using C99's designated initializers.
+   * For a 2D array of integers, a designated initializer will look like this: ```int a[3][4] = {[0][1] = 5, [2][3] = 6};```.
+   * In this example, the element in row ```0``` and column ```1``` will be assigned ```5```.
+   * The element in row ```2``` and column ```3``` will be assigned ```6```.
+   * All other elements will default to ```0```.
+* C allows declaring constant arrays that shouldn't be modified by the program.
+   * ```const int a[5] = {1, 2, 3, 4, 5};```.
+      * ```a``` is a constant array. Its individual elements are protected against change.
+      * An attempt to modify one of its elements is an error that the compiler will detect.
 
 ## :rainbow: Variable-Length Arrays
 
