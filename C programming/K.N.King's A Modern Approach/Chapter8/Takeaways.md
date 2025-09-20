@@ -115,4 +115,16 @@
 
 ## :rainbow: Variable-Length Arrays
 
+* Prior to C99, an array length in a declaration had to be a constant integer expression.
+* C99 adds the ability to use a non-constant array length when declaring arrays. Assuming ```n``` is an initialized integer variable:
+   * ```int a[n];``` is legal in C99.
+* This kind of array is called a "variable-length array" (VLA).
+* The length of a VLA is computed when the program is executed, not when it's compiled.
+* C99 doesn't require the length of a VLA to be a variable. It can be an expression, possibly containing operators.
+* Other VLA properties include:
+   * A VLA can be multidimensional.
+   * A VLA can't have static storage duration.
+   * A VLA can't have an initializer.
+* A VLA defined inside a function can have a different length every time the function is called.
+
 ## :game_die: Miscellaneous
