@@ -63,6 +63,48 @@
 
 ## :name_badge: Using An Array Name As A Pointer
 
+* Pointers and arrays in C are related in more than one way:
+   * Pointer arithmetic can be used to process an array.
+   * An array's name can be seen as a pointer to the first element in the array. Assuming the array declaration ```int a[5];``` is in effect:
+      * ```a``` is equivalent to ```&a[0]```.
+      * ```a + 1``` is equivalent to ```&a[1]```.
+      * Assuming ```i``` is an integer that satisfies ```0 <= i <= 5```, ```a + i``` is equivalent to ```&a[i]```.
+      * ```*a``` is equivalent to ```a[0]```.
+      * ```*(a + i)``` is equivalent to ```a[i]```.
+   * Array subscripting is just another form of pointer arithmetic.
+* Assuming ```a``` is an array of length ```n```, we can use pointer arithmetic to step through the array in the following manner:
+```c
+for(p = a; p < a + n; p++) {/* Process array element */}
+```
+* Although an array's name in C behaves like a pointer to its first element, attempting to modify it by making it point elsewhere produces a compile-time error. However, we can still copy it to a different pointer variable and modify that variable.
+* Assuming this declaration ```int a[5];``` is in effect:
+   * ```a``` itself is not a pointer, it's actually a non-modifiable lvalue whose type is "array of ```5``` integers" (```int[5]```).
+   * In many contexts, C will automatically convert ```a``` to a pointer that points to its first element. ```a```'s type becomes ```int *```.
+   * In C terminology, when this conversion happens, we say that the array name ```a``` decays to a pointer.
+   * An array name will decay to a pointer when:
+      * Assigned to a pointer: ```int *p = a;```. ```a``` in this case silently becomes ```&a[0]```.
+      * Used in an expression: ```*(a + 2)``` is equivalent to ```a[2]``` because ```a``` decayed.
+      * Passed to a function: ```function(a)```. ```a``` decays to a pointer when passed as an argument to ```function```.
+      * Anywhere the compiler expects a pointer, an array name will decay.
+   * An array name does not decay to a pointer in two major cases:
+      * When used with the ```sizeof``` operator. In this case, the array name represents the entire array.
+      * When used with the address operator ```&```. ```&a```'s type is ```int (*)[5]```.
+* An array name passed as argument to a function will always decay to a pointer. A pointer to the first element of the array is copied into the corresponding parameter.
+   * When an array is passed to a function, only a pointer to its first element is copied, not the entire array. This means changes made inside the function affect the original array.
+   * If we want to prevent the function from changing the contents of the array, we can add the keyword ```const``` before the array's declaration ```function(const int a[])``` . Any attempt to assign a value to an element of the array will produce an error.
+   * Passing a large array to a function does not hurt the system's performance since no copy of the array is made.
+   * An array parameter in a function can be declared as a pointer instead. Choosing either one makes no functional difference.
+   * A function that expects an array argument can be given a slice of an array.
+* It's important to make the distinction between an array decaying to a pointer and a pointer variable.
+   * An array name that decayed to a pointer can be used to reference elements in the array. In particular, it can be dereferenced using the indirection ```*``` operator to access elements in the array.
+   * A pointer variable cannot be dereferenced without initializing it first.
+   * The declaration ```int a[5];``` allocates a block of memory to hold ```5``` integers.
+   * The declaration ```int *a;``` allocates just enough space for a pointer variable.
+* Just as an array can be used as a pointer, C allows the use of pointers as if they were arrays. In particular, subscripting can be applied to a pointer albeit with some important rules:
+   * The pointer must point to a valid block of memory. An element inside an array (up to one past the last element) is usually a safe bet.
+   * Assuming ```a``` is an array, ```p``` is a pointer of the same type and this assignment ```p = a;``` is in effect:
+      * The subscripting operator ```[]``` in C is just pointer arithmetic in disguise. ```p[i]``` in this case is just shorthand for ```*(p + i)``` (i.e ```*(a + i)```).
+
 ## :point_left: Pointers And Multidimensional Arrays :books:
 
 ## :game_die: Miscellaneous
