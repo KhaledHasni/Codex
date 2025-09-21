@@ -4,6 +4,7 @@
   <a href="#point_right-using-pointers-for-array-processing">Using Pointers For Array Processing</a> •
   <a href="#name_badge-using-an-array-name-as-a-pointer">Using An Array Name As A Pointer</a> •
   <a href="#point_left-pointers-and-multidimensional-arrays-books">Pointers And Multidimensional Arrays</a> •
+  <a href="#point_left-pointers-and-variable-length-arrays-rainbow">Pointers And Variable-Length Arrays</a> •
   <a href="#game_die-miscellaneous"> Miscellaneous</a>
 </p>
 
@@ -106,5 +107,55 @@ for(p = a; p < a + n; p++) {/* Process array element */}
       * The subscripting operator ```[]``` in C is just pointer arithmetic in disguise. ```p[i]``` in this case is just shorthand for ```*(p + i)``` (i.e ```*(a + i)```).
 
 ## :point_left: Pointers And Multidimensional Arrays :books:
+
+* 2D arrays in C are stored in row-major order.
+   * This fact can be used to step through a 2D array using nested ```for``` loops:
+   ```c
+   for(i = 0; i < NUM_ROWS; i++)
+      for(j = 0; j < NUM_COLUMNS; j++)
+         /* Process 2D array element */
+   ```
+   * Using pointer arithmetic instead of array subscripting, we get:
+   ```c
+   for(p = &a[0][0]; p <= &a[NUM_ROWS - 1][NUM_COLUMNS - 1]; p++)
+      /* Process 2D array element */
+   ```
+   * Treating 2D arrays as one-dimensional works with most compilers and arguably offers a slight increase in efficiency especially with older compilers.
+* To process elements in a particular row of a 2D array, we can point to the first element in the row and use pointer arithmetic to access the remaining elements. Assuming ```i``` is an integer and ```a``` is a 2D array of integers:
+   * We can declare a pointer variable ```p``` that points to the first element in row ```i```: ```int *p = &a[i][0];```.
+   * The previous declaration can be further simplified by writing ```int *p = a[i];```. In fact:
+      * Given that ```b[i]``` is just another way of writing ```*(b + i)``` for any one-dimensional array ```b```, ```a[i][0]``` is equivalent to ```*(a[i] + 0)``` since ```a[i]``` is a row in a 2D array and can therefore be seen as a one-dimensional array.
+      * ```*(a[i] + 0)``` is equivalent to ```*a[i]```.
+      * ```int *p = &a[i][0];``` is therefore equivalent to ```&*a[i]``` which is the same as ```a[i]```.
+      * In summary, ```a[i]``` is a pointer to the first element in the row ```i``` of the 2D array ```a```.
+      * To step through row ```i``` using a ```for``` loop, we can write:
+      ```c
+      for(p = a[i]; p < a[i] + NUM_COLUMNS; p++)
+         /* Process element from row i */
+      ```
+* A row or a column from a 2D array is treated exactly as a one-dimensional array. In particular, it can be passed to a function that expects an array.
+* Stepping through a column of a 2D array is a little bit more complicated than stepping through a row since arrays are stored in row-major order. Assuming ```i``` is an integer and ```a``` is a 2D array of integers:
+   * The trick is to step through the array one row at a time in each loop iteration and access the element in each row corresponding to column ```i```.
+   * We can declare a pointer to a "row": ```int (*p)[NUM_COLUMNS];``` and write the loop in this fashion to access all elements of column ```i```:
+   ```c
+   for(p = &a[0]; p < &a[NUM_ROWS]; p++)
+      /* (*p)[i] accesses element from column i */
+   ```
+   * ```p``` is a pointer to an array so we must declare it as ```int (*p)[NUM_COLUMNS]```. ``` int *p[NUM_COLUMNS]``` would be the declaration of an array of pointers to integers instead.
+   * ```p++``` advances to the next row.
+   * ```(*p)[i]``` is needed to access the ```i```'th element of a row because the subscripting operator ```[]``` has higher precedence than the indirection operator ```*```. ```*p[i]``` is equivalent to ```*(p[i])``` which is not what we want.
+* The name of a 2D array ```a``` is a pointer to the first row ```a[0]```. This is not intuitively clear, but does become so when we remember that C views a 2D array as a one-dimensional array whose elements are one-dimensional arrays.
+   * When used as a pointer, the name of a 2D array ```a``` is a pointer of type ```int (*)[NUM_COLUMNS]```.
+   * The name of a 2D array ```a``` is not a pointer to ```a[0][0]```.
+* We can use the name of a 2D array ```a``` to step through a column of our choice. Assuming the following declaration is in effect ```int (*p)[NUM_COLUMNS];```:
+   ```c
+   for(p = a; p < a + NUM_ROWS; p++)
+      /* (*p)[i] accesses element from column i */
+   ```
+* We can trick a function that expects a one-dimensional array as an argument into thinking that a 2D array is one-dimensional.
+   * We can pass the 2D array by calling ```function(a[0], NUM_ROWS * NUM_COLUMNS)``` where the prototype of ```function``` is ```function(int a[], int n)```.
+   * ```function(a, NUM_ROWS * NUM_COLUMNS)``` would not be correct since ```a``` has type ```int (*)[NUM_COLUMNS]```.
+
+## :point_left: Pointers And Variable-Length Arrays :rainbow:
 
 ## :game_die: Miscellaneous
