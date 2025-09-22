@@ -56,6 +56,22 @@
 
 ## :package: Blocks
 
+* A compound statement is any group of statements enclosed in a pair of braces: ```{statements}```.
+* A compound statement can be used anywhere a statement is allowed.
+* C allows a compound statement to contain declarations: ```{declarations statements}```. Such a statement is called a ```block```.
+* Variables declared inside blocks have several default properties:
+   * They have automatic storage duration.
+      * Storage for a variable declared in a block is allocated when the block is entered and deallocated when the block is exited.
+   * They have block scope.
+      * A variable declared inside a block is visible from the point of its declaration until the end of the enclosing block.
+   * Adding the keyword ```static``` in front of its declaration will give such a variable static storage duration.
+* A function's body is a block.
+* Some C programmers use blocks inside functions for different reasons:
+   * To avoid dumping a load of variables at the beginning of the function, especially if some of them won't be needed until further down in the function body.
+   * To reduce name conflict especially for variables with generic names like ```i``` and ```temp```.
+* C99 does not require variables to be declared at the beginning of a block.
+   * As a result, a variable declared inside a block may have very limited scope if its declaration happens near the end of the block.
+
 ## :telescope: Scope
 
 ## :card_index_dividers: Organizing A C Program
