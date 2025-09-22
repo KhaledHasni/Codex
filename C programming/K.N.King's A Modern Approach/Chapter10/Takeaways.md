@@ -83,4 +83,13 @@
 
 ## :card_index_dividers: Organizing A C Program
 
+* C is not very restrictive when it comes to ordering the different elements that make up a source file. But there are some rules to keep in mind:
+   * A preprocessing directive does not take effect until the line on which it appears.
+   * A type name has to be defined before it can be used.
+   * A variable has to be declared before it can be used.
+   * C99 requires that a function be defined or declared prior to its first call.
+
 ## :game_die: Miscellaneous
+
+* When a function is called recursively, fresh copies of its local automatic variables are made at every call. The same can't be said for its static local variables.
+These are shared across calls of the recursive function.
