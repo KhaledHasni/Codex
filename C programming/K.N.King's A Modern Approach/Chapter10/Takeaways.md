@@ -77,6 +77,7 @@
 * An identifier in a C program may have several different meanings. The compiler relies on C's ```scope rules``` to determine the relevant meaning at different stages in the program.
 * C's most important scope rule is the following:
    * If an identifier is declared inside a block where it's already visible, the new declaration overrides the old one and the identifier takes on a new role until the enclosing block is exited, at which point, it regains its old meaning.
+   * This rule is colloquially known as "narrow scope shadowing".
    * Two common scenarios may lead to this situation:
       * The original identifier has file scope.
       * The current block is nested inside another one, and the original identifier was already declared inside the outer block.
