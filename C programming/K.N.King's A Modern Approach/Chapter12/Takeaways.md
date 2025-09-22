@@ -158,4 +158,15 @@ for(p = a; p < a + n; p++) {/* Process array element */}
 
 ## :point_left: Pointers And Variable-Length Arrays :rainbow:
 
+* C99 allows pointers to point to an element of a variable-length array (VLA).
+* Assuming ```n``` is an integer variable, and this variable-length array's declaration is in effect ```int a[n];```:
+   * We can declare a pointer to an integer and have it point to the first element of ```a```: ```int *p = a;```.
+   * ```a``` in this case is a one-dimensional array.
+* Assuming ```a``` is a 2D array declared as follows: ```int a[n][m];```, where ```m``` and ```n``` are two integers:
+   * We can declare a pointer to a row (one-dimensional array) and have it point to the first row of ```a```: ```int (*p)[m] = a;```
+   * The pointer variable ```p```'s type is ```int (*)[m]``` which depends on the variable ```m```. For this reason, ```p``` is said to have a "variably modified type".
+   * An initialization such as ```int (*p)[5] = a;``` will pass compilation, but won't make any sense if ```m != 5```. Any subsequent use of ```p``` in this case will cause undefined behavior.
+* Pointer arithmetic works with VLAs (both one-dimensional and multidimensional) just as it does with ordinary arrays.
+* C99 enforces some restrictions on variably modified types. Most notably, their declaration must occur inside a function body or in a function prototype.
+
 ## :game_die: Miscellaneous
