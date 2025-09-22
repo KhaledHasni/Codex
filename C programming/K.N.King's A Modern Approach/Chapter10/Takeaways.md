@@ -39,6 +39,21 @@
 
 ## :earth_africa: External Variables
 
+* C offers multiple ways to transfer information between different functions. Two of the most frequently used are:
+   * Passing arguments.
+   * ```External variables```, also known as global variables.
+* An external variable is a variable declared outside of all functions.
+* External variables in C have the following default properties:
+   * They have static storage duration.
+      * A value stored in a global variable will remain there for the lifetime of the program unless intentionally changed.
+   * They have ```file scope```.
+      * An external variable can be referenced anywhere from its point of declaration until the end of the enclosing file.
+      * An external variable is visible inside all functions defined in the same file, provided those functions appear after its declaration.
+* It's important not to abuse external variables since their excessive use can quickly degrade the quality of a program in multiple ways:
+   * It hurts program maintainability: Changing an external variable must be done carefully since it impacts multiple functions.
+   * It makes programs harder to debug: If an external variable contains an unexpected value during program execution, it becomes difficult to trace its root cause because multiple functions may access and modify it.
+   * It hurts program portability: A function that uses an external variable is not self-contained and cannot be reused for other purposes.
+
 ## :package: Blocks
 
 ## :telescope: Scope
