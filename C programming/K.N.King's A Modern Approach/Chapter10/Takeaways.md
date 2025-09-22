@@ -77,10 +77,20 @@
 * An identifier in a C program may have several different meanings. The compiler relies on C's ```scope rules``` to determine the relevant meaning at different stages in the program.
 * C's most important scope rule is the following:
    * If an identifier is declared inside a block where it's already visible, the new declaration overrides the old one and the identifier takes on a new role until the enclosing block is exited, at which point, it regains its old meaning.
+   * This rule is colloquially known as "narrow scope shadowing".
    * Two common scenarios may lead to this situation:
       * The original identifier has file scope.
       * The current block is nested inside another one, and the original identifier was already declared inside the outer block.
 
 ## :card_index_dividers: Organizing A C Program
 
+* C is not very restrictive when it comes to ordering the different elements that make up a source file. But there are some rules to keep in mind:
+   * A preprocessing directive does not take effect until the line on which it appears.
+   * A type name has to be defined before it can be used.
+   * A variable has to be declared before it can be used.
+   * C99 requires that a function be defined or declared prior to its first call.
+
 ## :game_die: Miscellaneous
+
+* When a function is called recursively, fresh copies of its local automatic variables are made at every call. The same can't be said for its static local variables.
+These are shared across calls of the recursive function.
