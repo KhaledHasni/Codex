@@ -170,3 +170,21 @@ for(p = a; p < a + n; p++) {/* Process array element */}
 * C99 enforces some restrictions on variably modified types. Most notably, their declaration must occur inside a function body or in a function prototype.
 
 ## :game_die: Miscellaneous
+
+* Integers used in pointer arithmetic are scaled to the size of the pointer. This means that if ```p``` is a pointer to a value of type ```T```, whose size is ```x``` bytes:
+   * ```p + j``` will add ```j * x``` to the address value stored in ```p```.
+   * For example, if ```p``` is of type ```int *```, ```p + j``` will add ```j * 4``` to the address stored in ```p``` since integers are usually stored over ```4``` bytes.
+* Debating whether to use pointer arithmetic or array subscripting for array processing is pointless. Neither can be proven to be more advantageous. The best thing to do is to learn both and use whichever one feels more natural.
+* Assuming this declaration is in effect ```int a[N];```, and ```i``` is an integer that satisfies ```0 <= i < N```:
+   * Writing ```i[a]``` is equivalent to writing ```a[i]```.
+   * A quick demonstration:
+      * ```i[a] == *(i + a)```, since subscripting is actually just pointer arithmetic in disguise.
+      * ```*(i + a) == *(a + i)```, since addition is commutative.
+      * ```*(a + i) == a[i]```, for the same reason stated already.
+   * This is one of C's quirks that highlights the nature of array subscripting under the hood.
+* C requires that array names be used as constant pointers, but that's not the case for array parameter names which can be made to point elsewhere.
+* Some bounds-checking compilers will not allow treating multidimensional arrays as one-dimensional because they detect stepping past the last element of the first row as an illegal access (effectively stepping out of bounds of a one-dimensional array).
+* Assuming ```a``` is a 2D array:
+   * ```a``` and ```a[0]``` both point to ```a[0][0]```.
+   * ```a``` is of type ```int (*)[NUM_COLUMNS]``` and ```a[0]``` is of type ```int *```.
+   * Even though they both hold the same address, ```a``` is pointing to a 1D array while ```a[0]``` is pointing to an integer.
