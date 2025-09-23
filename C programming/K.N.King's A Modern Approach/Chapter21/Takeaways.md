@@ -71,6 +71,73 @@
 
 ## :mag: C89 Library Overview
 
+* The following is a rundown of C89's standard headers:
+   * ```<assert.h>```
+      * Defines the ```assert``` macro used for program diagnostics.
+      * If an ```assert``` call fails, the program immediately terminates.
+   * ```<ctype.h>```
+      * Mainly used for character handling.
+      * Contains functions used for character classification.
+      * Provides functions used to convert letter characters from uppercase to lowercase or the other way around.
+   * ```<errno.h>```
+      * ```errno``` stands for "error number".
+      * Provides ```errno``` which is an lvalue that can be checked after certain library function calls to make sure an error did not occur during the call.
+   * ```<float.h>```
+      * Defines macros that describe the characteristics of floating types, including their accuracy and range.
+      * Floating types in C are used to represent real numbers.
+      * C provides three standard floating types: ```float```, ```double``` and ```long double```.
+   * ```<limits.h>```
+      * Is primarily concerned with sizes of integer types.
+      * Defines macros that describe the characteristics of integer types (including character types), including their maximum and minimum values.
+   * ```locale.h```
+      * Provides utilities and functions that allow a program to adapt its behavior to a particular geographic area. This includes:
+         * The character set.
+         * Date and time formats.
+         * The format of monetary values (the currency symbol for example).
+         * The character used as the decimal point when printing floating-point numbers.
+   * ```math.h```
+      * Provides common mathematical functions including:
+         * Logarithmic functions.
+         * Exponential functions.
+         * Trigonometric functions.
+         * Hyperbolic functions.
+         * Absolute value.
+         * Nearest integers.
+   * ```<setjmp.h>```
+      * Handles nonlocal jumps.
+      * Mainly provides two functions:
+         * ```setjmp``` : Marks a place in a program.
+         * ```longjmp```: Returns to a place marked using ```setjmp```.
+      * When used in tandem, these functions allow a program to jump from one function into another active function, bypassing the normal function return mechanism.   
+   * ```<signal.h>```
+      * Defines functions that handle exceptional conditions known as ```signals```.
+      * Interrupts and run-time errors are two of the most common signals in C programs.
+      * The ```signal``` function registers a function to be called should a particular signal be raised.
+      * The ```raise``` function causes a signal to occur.
+   * ```<stdarg.h>```
+      * Provides utilities for writing functions that have a variable number of arguments.
+   * ```<stddef.h>```
+      * Defines some of C's most frequently used types and macros.
+   * ```<stdio.h>```
+      * Provides functions that handle input and output, including operations on sequential and random-access files.
+   * ```<stdlib.h>```
+      * Provides general utilities that don't fit into any of the other headers.
+      * Contains an assortment of functions that perform several tasks including:
+         * Converting strings to numbers.
+         * Generating pseudo-random numbers.
+         * Performing memory management tasks.
+         * Performing searching and sorting.
+         * Communicating with the operating system.
+   * ```<string.h>```
+      * Is primarily concerned with handling strings.
+      * Provides functions that perform various operations on strings including:
+         * Copying.
+         * Concatenation.
+         * Searching.
+         * Comparing.
+   * ```<time.h>```
+      * Provides functions for handling the time and date.
+
 ## :recycle: C99 Library Changes
 
 ## :jigsaw: The <stddef.h> Header
