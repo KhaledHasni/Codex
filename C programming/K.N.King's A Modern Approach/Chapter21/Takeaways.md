@@ -178,6 +178,34 @@
 
 ## :jigsaw: The <stddef.h> Header
 
+* ```stddef.h``` provides definitions of frequently used types and macros. It doesn't define any functions.
+* The types defined in ```stddef.h``` are:
+   * ```ptrdiff_t```: The type of the result when the difference between two pointers is computed. This is a signed type.
+   * ```size_t```: The type of the result produced by the ```sizeof``` operator. This is an unsigned type.
+   * ```wchar_t```: A type designed to be large enough to represent characters in all supported locales.
+   * All three are integer types.
+* ```stddef.h``` defines the ```NULL``` macro which represents the null pointer.
+* ```stddef.h``` also defines a parameterized macro called ```offsetof``` which takes two arguments:
+   * ```type```: A structure type.
+   * ```member-designator```: A member within the structure.
+* The ```offsetof``` macro computes the number of bytes between the beginning of the structure passed as argument, and the designated member.
+   * C guarantees that a structure and its first member share the same address.
+      * As a result, assuming the following declaration is in effect:
+      ```c
+      struct s {
+         char a;
+         int n;
+         char str[10];
+      };
+      ```
+         * ```offsetof(struct s, a)``` is equal to ```0```.
+         * ```offsetof(struct s, n)``` could be either:
+            * ```1``` (```char``` values are 1 byte long).
+            * ```4``` if the compiler doesn't pack structure members and leaves padding bytes between.
+            * Other values are also possible.
+   * ```offsetof``` is guaranteed to produce the correct byte offset whether the compiler leaves holes or not, and irrespective of the platform being used.
+* Some of the macros defined in ```stddef.h``` are defined in other standard headers as well. For this reason, most programs don't include ```stddef.h```.
+
 ## :white_check_mark: The <stdbool.h> Header :x:
 
 ## :game_die: Miscellaneous
