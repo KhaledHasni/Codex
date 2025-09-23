@@ -216,3 +216,16 @@
    * ```__bool_true_false_are_defined``` defined to be ```1```.
 
 ## :game_die: Miscellaneous
+
+* According to the C standard, standard headers don't need to be stored in files. In most cases, the headers come in the form of files, but in some cases, they could be built into the compiler itself. For this reason, it's best to say "standard headers" instead of "standard header files".
+* According to the C standard, parameterized macros that substitute for library functions must satisfy two conditions:
+   * They must evaluate their arguments exactly once.
+      * This avoids some of C's classic pitfalls when using parameterized macros.
+      * Suppose we have the following parameterized macro:
+      ```c
+      #define SQUARE(x) ((x) * (x))
+      ```
+         * This macro will evaluate its argument ```x``` twice. If ```x``` has side effects, it will be evaluated twice.
+         * An equivalent function will only evaluate its argument once.
+   * They must be fully protected using parentheses.
+      * This avoids operator precedence issues when the macro is expanded.
