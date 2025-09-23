@@ -208,4 +208,11 @@
 
 ## :white_check_mark: The <stdbool.h> Header :x:
 
+* The ```stdbool.h``` standard header is a C99 addition.
+* ```stdbool.h``` defines four macros:
+   * ```bool``` represents C99's ```_Bool``` type.
+   * ```true``` defined to be ```1```.
+   * ```false``` defined to be ```0```.
+   * ```__bool_true_false_are_defined``` defined to be ```1```.
+
 ## :game_die: Miscellaneous
