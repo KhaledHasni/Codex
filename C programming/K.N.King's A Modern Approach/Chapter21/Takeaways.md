@@ -11,31 +11,31 @@
 ## :books: Using The Library
 
 * The C89 standard library has 15 headers:
-   * <assert.h>
-   * <ctype.h>
-   * <errno.h>
-   * <float.h>
-   * <limits.h>
-   * <locale.h>
-   * <math.h>
-   * <setjmp.h>
-   * <signal.h>
-   * <stdarg.h>
-   * <stddef.h>
-   * <stdio.h>
-   * <stdlib.h>
-   * <string.h>
-   * <time.h>
+   * assert.h
+   * ctype.h
+   * errno.h
+   * float.h
+   * limits.h
+   * locale.h
+   * math.h
+   * setjmp.h
+   * signal.h
+   * stdarg.h
+   * stddef.h
+   * stdio.h
+   * stdlib.h
+   * string.h
+   * time.h
 * C99 introduces an extra nine headers to make it a total of 24:
-   * <complex.h>
-   * <fenv.h>
-   * <inttypes.h>
-   * <iso646.h>
-   * <stdbool.h>
-   * <stdint.h>
-   * <tgmath.h>
-   * <wchar.h>
-   * <wctype.h>
+   * complex.h
+   * fenv.h
+   * inttypes.h
+   * iso646.h
+   * stdbool.h
+   * stdint.h
+   * tgmath.h
+   * wchar.h
+   * wctype.h
 * These 24 headers constitute C99's standard library, which is an inherent part of the C programming language.
 * Some C compilers provide a more extensive library. The extra headers are not part of the standard library. They usually provide platform-specific utilities.
 * C's standard headers mostly contain:
@@ -47,7 +47,7 @@
    * C allows including a standard header more than once in the same source file.
 * When using C's standard library, it's important to keep some rules in mind to avoid portability issues:
    * A C file that includes a standard header can't use any macro defined in that header for a different purpose.
-      * Example: ```NULL``` can't be reused in a file if ```<stdio.h>``` is included.
+      * Example: ```NULL``` can't be reused in a file if ```stdio.h``` is included.
    * A C file that includes a standard header can't redefine an identifier with file scope, particularly a typedef name, and grant it file scope.
       * Example: ```size_t``` can't be redefined with file scope if ```stdio.h``` is included.
       * If ```stdio.h``` is included, ```size_t``` can still be redefined if given a different scope (block scope for example).
@@ -72,21 +72,21 @@
 ## :mag: C89 Library Overview
 
 * The following is a rundown of C89's standard headers:
-   * ```<assert.h>```
+   * ```assert.h```
       * Defines the ```assert``` macro used for program diagnostics.
       * If an ```assert``` call fails, the program immediately terminates.
-   * ```<ctype.h>```
+   * ```ctype.h```
       * Mainly used for character handling.
       * Contains functions used for character classification.
       * Provides functions used to convert letter characters from uppercase to lowercase or the other way around.
-   * ```<errno.h>```
+   * ```errno.h```
       * ```errno``` stands for "error number".
       * Provides ```errno``` which is an lvalue that can be checked after certain library function calls to make sure an error did not occur during the call.
-   * ```<float.h>```
+   * ```float.h```
       * Defines macros that describe the characteristics of floating types, including their accuracy and range.
       * Floating types in C are used to represent real numbers.
       * C provides three standard floating types: ```float```, ```double``` and ```long double```.
-   * ```<limits.h>```
+   * ```limits.h```
       * Is primarily concerned with sizes of integer types.
       * Defines macros that describe the characteristics of integer types (including character types), including their maximum and minimum values.
    * ```locale.h```
@@ -103,24 +103,24 @@
          * Hyperbolic functions.
          * Absolute value.
          * Nearest integers.
-   * ```<setjmp.h>```
+   * ```setjmp.h```
       * Handles nonlocal jumps.
       * Mainly provides two functions:
          * ```setjmp``` : Marks a place in a program.
          * ```longjmp```: Returns to a place marked using ```setjmp```.
-      * When used in tandem, these functions allow a program to jump from one function into another active function, bypassing the normal function return mechanism.   
-   * ```<signal.h>```
+      * When used in tandem, these functions allow a program to jump from one function into another active function, bypassing the normal function return mechanism.
+   * ```signal.h```
       * Defines functions that handle exceptional conditions known as ```signals```.
       * Interrupts and run-time errors are two of the most common signals in C programs.
       * The ```signal``` function registers a function to be called should a particular signal be raised.
       * The ```raise``` function causes a signal to occur.
-   * ```<stdarg.h>```
+   * ```stdarg.h```
       * Provides utilities for writing functions that have a variable number of arguments.
-   * ```<stddef.h>```
+   * ```stddef.h```
       * Defines some of C's most frequently used types and macros.
-   * ```<stdio.h>```
+   * ```stdio.h```
       * Provides functions that handle input and output, including operations on sequential and random-access files.
-   * ```<stdlib.h>```
+   * ```stdlib.h```
       * Provides general utilities that don't fit into any of the other headers.
       * Contains an assortment of functions that perform several tasks including:
          * Converting strings to numbers.
@@ -128,17 +128,53 @@
          * Performing memory management tasks.
          * Performing searching and sorting.
          * Communicating with the operating system.
-   * ```<string.h>```
+   * ```string.h```
       * Is primarily concerned with handling strings.
       * Provides functions that perform various operations on strings including:
          * Copying.
          * Concatenation.
          * Searching.
          * Comparing.
-   * ```<time.h>```
+   * ```time.h```
       * Provides functions for handling the time and date.
 
 ## :recycle: C99 Library Changes
+
+* C99 introduced an extensive set of changes that can be broken down into three groups:
+   * New headers.
+      * Nine new headers are introduced.
+      * Three of these headers were actually introduced in C's 1995 amendment (```iso646.h```, ```wchar.h``` and ```wctype.h```).
+   * New macros and functions introduced to existing headers.
+   * New capabilities added to existing functions.
+* The following is a rundown of C99's new standard headers:
+   * ```complex.h```
+      * Provides functions that can be used to perform mathematical operations on complex numbers.
+      * Defines the ```complex``` and ```I``` macros used in complex arithmetic.
+   * ```fenv.h```
+      * Provides access to floating-point control modes.
+         * This can be used to specify how rounding a floating-point number should be done.
+      * Provides access to floating-point status flags.
+         * This can be used to check if overflow occurred during an operation on a floating-point number.
+   * ```inttypes.h```
+      * Defines a set of macros that can be used in format strings involving integer types defined in ```stdint.h```.
+      * Provides utilities for working with greatest-width integers such as ```intmax_t```.
+   * ```iso646.h```
+      * Defines macros that provide alternative spellings for some characters that might not be part of the character set available on some platforms.
+      * The macros provided are used primarily to represent operators that are written using one or more of these symbols: ```&```, ```|```, ```~```, ```!``` and ```^```.
+   * ```stdbool.h```
+      * Primarily useful for its ```bool```, ```true``` and ```false``` macros.
+   * ```stdint.h```
+      * Declares integer types with specific widths.
+      * Defines macros that specify the maximum and minimum value of each integer type.
+   * ```tgmath.h```
+      * C99 provides multiple versions of certain math functions, split between ```math.h``` and ```complex.h```.
+      * ```tgmath.h``` defines type-generic macros that can detect the correct version of the call based on the arguments passed and substitute a call of the appropriate function.
+   * ```wchar.h```
+      * Includes multibyte and wide character utilities.
+      * Provides utilities for wide character input/output and wide string manipulation.
+   * ```wctype.h```
+      * Offers the wide-character version of ```ctype.h```.
+      * Provides functions for changing the case of wide characters.
 
 ## :jigsaw: The <stddef.h> Header
 
