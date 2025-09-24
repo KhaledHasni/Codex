@@ -198,11 +198,11 @@
          char str[10];
       };
       ```
-         * ```offsetof(struct s, a)``` is equal to ```0```.
-         * ```offsetof(struct s, n)``` could be either:
-            * ```1``` (```char``` values are 1 byte long).
-            * ```4``` if the compiler doesn't pack structure members and leaves padding bytes between.
-            * Other values are also possible.
+      * ```offsetof(struct s, a)``` is equal to ```0```.
+      * ```offsetof(struct s, n)``` could be either:
+         * ```1``` (```char``` values are 1 byte long).
+         * ```4``` if the compiler doesn't pack structure members and leaves padding bytes between.
+         * Other values are also possible.
    * ```offsetof``` is guaranteed to produce the correct byte offset whether the compiler leaves holes or not, and irrespective of the platform being used.
 * Some of the macros defined in ```stddef.h``` are defined in other standard headers as well. For this reason, most programs don't include ```stddef.h```.
 
