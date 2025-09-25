@@ -160,4 +160,43 @@
 
 ## :hammer_and_wrench: Other Low-Level Techniques
 
+* Depending on the platform they're working on, some C programmers define machine-dependent types.
+   * The ```char``` type, by definition, stores a single byte of data.
+      * For this reason, characters are sometimes treated as byte storage units for data that's not necessarily in character form.
+      * When this is done extensively throughout a program, C programmers will often define a dedicated type ```typedef unsigned char BYTE;```.
+   * Some platforms rely heavily on 16-bit words for data storage.
+      * For such platforms, it's a good idea to define a dedicated type ```typedef unsigned short WORD;```
+* Unions in C can be used to view a block of memory in more than one way.
+   * Assuming we have a structure containing bit field members that fit into two adjacent bytes of memory.
+   * Any two bytes, including any ```unsigned short``` value, can be viewed as an instance of this structure.
+   ```c
+   union is_this_a_date {
+      struct date_t date;
+      unsigned short a;
+   };
+   ```
+   * Assuming the following union declaration is in effect: ```union is_this_a_date u```:
+      * Assigning a ```unsigned short``` value to ```u.a``` will automatically populate all its fields in the ```date``` structure.
+* When a data item is stored over one or more bytes, there are two ways this storage can take place in memory:
+   * In the natural order: The most significant byte stored first. This type of storage is called "Big-Endian".
+   * In the reverse order: The most significant byte stored last. This type of storage is called "Little-Endian".
+   * C has no preference over which type of storage is used. This depends entirely on the CPU running the program.
+* Most C programs don't need to worry about byte ordering when storing data unless it's dealing with memory at a low level or reading files that contain data in non-character form.
+* When using unions to view data in more than one way, it's common for an item that's valid in its original form to become invalid when viewed as a different type.
+* It's sometimes useful to create a pointer variable that holds a specific address.
+* An address usually has the same number of bits as an integer (or a long integer).
+   * Assuming we want to create a pointer to an integer stored at the address ```0x1234```.
+   ```c
+   int *p;
+
+   p = (int *) 0x1234;
+   ```
+   * We can declare a pointer variable capable of pointing to data of type ```int```.
+   * Cast the address value ```0x1234``` to an integer pointer.
+* Data stored in some memory locations can change while a program is being executed, even though the program itself is not actively changing it. Such memory locations are called "volatile".
+   * A storage unit that stores data read directly from a user keyboard is an example of a volatile memory location.
+* C provides the ```volatile``` keyword that allows us to inform the compiler of the volatile nature of a data item.
+* Declaring a pointer variable ```p``` as volatile tells the compiler that ```*p``` should be fetched from memory every time it's needed.
+* When a CPU executes a program in "protected mode," the program can only access memory portions that belong to it. This prevents it from changing data that belongs to other applications or to the operating system.
+
 ## :game_die: Miscellaneous
