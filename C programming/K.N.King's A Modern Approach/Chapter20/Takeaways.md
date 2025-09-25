@@ -113,6 +113,51 @@
 
 ## :clamp: Bit-Fields In Structures
 
+* C allows using bit fields in structure members of type ```int```, ```unsigned int``` and ```signed int```.
+   * Assuming ```date_t``` is a structure type used to represent a date:
+   ```c
+   struct date_t {
+      unsigned int day: 5;
+      unsigned int month: 4;
+      unsigned int year: 7;
+   };
+   ```
+   * The number after each colon ```:``` represents the structure member's length in bits.
+   * The declaration can be made shorter since all three bit fields have the same type:
+   ```c
+   struct date_t {
+      unsigned int day: 5, month: 4, year: 7;
+   };
+   ```
+* A bit field's type must be either ```int```, ```unsigned int``` or ```signed int```.
+   * Using ```int``` may hurt program portability because some compilers will treat the most significant bit in the bit field as a sign bit, while others won't.
+   * To ensure we write portable low-level programs, it's best to use ```unsigned int``` or ```signed int``` for bit fields.
+* C99 allows bit fields to be of type ```_Bool```.
+* Bit fields can be accessed and used just like any other structure member.
+* Since bit fields in structures don't have ordinary addresses in memory, C prohibits applying the address operator ```&``` to a bit field.
+   * For this reason, functions like ```scanf``` can't read data directly into a bit field.
+   * C still allows assignment to a bit field.
+* How a compiler processes the declaration of a structure that has bit field members depends on the concept of "storage unit".
+   * A storage unit is the smallest unit of data storage in main memory.
+   * The size of a storage unit is implementation-defined. Typical values are ```8```, ```16``` and ```32``` bits.
+   * The compiler processes bit field structure members one by one, storing them contiguously in a storage unit with no holes in between.
+   * When the remaining space in a storage unit is not enough to store the next bit field, the compiler's behavior is implementation-defined.
+      * Some compilers skip to the start of the next storage unit.
+      * Other compilers split the bit field between both storage units.
+   * Whether bit fields are stored from right to left or left to right inside a storage unit is implementation-defined.
+* C allows adding nameless bit fields as structure members.
+   * These bit fields serve as paddings to ensure other bit fields are positioned correctly inside a storage unit.
+   ```c
+   struct date_t {
+      unsigned int day: 5;
+      unsigned int : 4;
+      unsigned int year: 7;
+   };
+   ```
+   * The second bit field member in the previous example is not named. The compiler will therefore leave it out.
+   * The ```year``` bit field will still be positioned as if the second member existed.
+   * Some C programmers set an unnamed bit field's length to ```0```. This effectively tells the compiler to skip to the start of the next storage unit before storing the next bit field.
+
 ## :hammer_and_wrench: Other Low-Level Techniques
 
 ## :game_die: Miscellaneous
