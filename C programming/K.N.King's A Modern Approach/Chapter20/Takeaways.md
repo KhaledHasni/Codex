@@ -200,3 +200,8 @@
 * When a CPU executes a program in "protected mode," the program can only access memory portions that belong to it. This prevents it from changing data that belongs to other applications or to the operating system.
 
 ## :game_die: Miscellaneous
+
+* The bitwise and operator ```&``` will produce the same result as the logical and operator ```&&``` as long as both are applied to operands that have the values ```0``` and ```1``` in any combination. Otherwise, the two operands may not produce the same result.
+* The same applies to the bitwise inclusive or operator ```|``` and the logical or operator ```||```.
+* If the bitwise and operator's second operand has a side effect, it will always be performed irrespective of the value of its first operand. The same can't be said for the logical and operator ```&&``` which will not perform its second operand's side effect if its first operand has the value ```0```.
+* The terms "Big-Endian" and "Little-Endian" originate from Jonathan Swift's novel "Gulliver's Travels". In the novel, residents of two rival islands are always fighting over whether to open a boiled egg at the big end or the little end. The arbitrary nature of the choice mirrors the byte order choice when storing data in memory.
