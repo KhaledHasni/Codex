@@ -41,6 +41,31 @@
 
 ## :magic_wand: Preprocessing Directives
 
+* C's preprocessing directives can be broken down into four groups:
+   * Macro definition.
+      * ```#define```: Defines a macro.
+      * ```#undef``` : Removes the definition of a macro.
+   * File inclusion.
+      * ```#include``` : Includes the content of a designated file.
+   * Conditional compilation.
+      * ```#if```, ```#ifdef```, ```#ifndef```, ```#elif```, ```#else``` and ```#endif```.
+      * These directives cause a specific block of the program's text to be either compiled or ignored.
+      * The choice of whether or not to compile the designated block of text depends on a condition that the preprocessor can test.
+   * Other directives.
+      * This fourth category includes all remaining directives.
+      * ```#error```, ```#line``` and ```#pragma```.
+* A preprocessing directive always begins with the ```#``` symbol.
+   * The ```#``` symbol does not necessarily have to appear at the beginning of the line.
+   * If it doesn't appear at the beginning of the line, it can only be preceded by whitespace characters.
+   * The name of the directive comes right after the ```#``` symbol.
+   * Any other tokens that the directive might need come last.
+* C is a permissive language with regards to whitespace characters. As a result, a preprocessing directive's tokens can be separated by any number of spaces and horizontal tabs.
+* A preprocessing directive ends at the first new-line character.
+   * C allows writing directives on multiple lines using a technique that the C standard calls "splicing".
+   * If we want to write to continue a directive on the next line, we must end the current line with a backslash character ```\```.
+* A directive can be followed by a comment on the same line.
+* Preprocessing directives can appear anywhere in a program, even in the middle of functions.
+
 ## :label: Macro Definitions
 
 ## :vertical_traffic_light: Conditional Compilation
