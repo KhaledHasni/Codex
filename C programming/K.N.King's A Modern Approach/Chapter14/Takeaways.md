@@ -61,8 +61,8 @@
    * Any other tokens that the directive might need come last.
 * C is a permissive language with regards to whitespace characters. As a result, a preprocessing directive's tokens can be separated by any number of spaces and horizontal tabs.
 * A preprocessing directive ends at the first new-line character.
-   * C allows writing directives on multiple lines using a technique that the C standard calls "splicing".
-   * If we want to write to continue a directive on the next line, we must end the current line with a backslash character ```\```.
+   * C allows writing a directive on multiple lines using a technique that the C standard calls "splicing".
+   * If we want to continue writing a directive on the next line, we must end the current line with a backslash character ```\```.
 * A directive can be followed by a comment on the same line.
 * Preprocessing directives can appear anywhere in a program, even in the middle of functions.
 
@@ -72,15 +72,15 @@
 
 * "Simple macros", also known as "object-like macros", are macros that don't take any arguments.
 * A simple macro in C has the following general form: ```#define identifier replacement_list```.
-   * ```replacement_list``` is any sequence of preprocessing tokens separated by white space characters.
+   * ```replacement_list``` is any sequence of preprocessing tokens separated by whitespace characters.
    * A replacement list may include identifiers, keywords, numeric constants, character constants, string literals, operators and punctuation.
    * The replacement list replaces any occurrence of the identifier in the program text once the macro is expanded.
 * Any symbols following a macro's identifier are part of its replacement list. Failing to remember this rule leads to some common errors beginner C programmers make:
    * Ending a macro definition with a semicolon ```;```.
       * Although perfectly legal, the semicolon will be part of the macro's replacement list which is usually not the desired effect.
    * Adding an equal sign ```=``` between the identifier and its replacement list.
-      * The preprocessor will expand every occurrence of identifier to its replacement list. There's no need for the equal sign.
-   * If such mistakes slip through the preprocessor, they will be detected by the compiler.
+      * The preprocessor will expand every occurrence of ```identifier``` to its replacement list. There's no need for the equal sign.
+   * If such mistakes slip through the preprocessor, they will usually be detected by the compiler.
 * Simple macros are primarily used to define numeric, character and string constants.
    * Kernighan and Ritchie would call these "manifest constants".
 * Using a simple macro to associate a name to a manifest constant is usually done for a variety of reasons:
@@ -93,7 +93,7 @@
       * Using ```typedef``` is usually better to achieve this goal.
    * Creating a new syntax rule set.
       * Some C programmers use simple macros like ```#define BEGIN {``` and ```#define END }``` to replace C's compound statement delimiters (curly braces).
-      * Others use simple macros to replace entire statements like ```if``` and ```for``` statements.
+      * Others use simple macros to replace entire statements like ```if``` and ```for```.
       * This makes programs almost impossible to read.
    * Defining a preprocessing symbol or flag for conditional compilation.
 * A simple macro with an empty replacement list is perfectly legal.
@@ -145,10 +145,10 @@
 
 * The ```#``` operator is not recognized by the compiler.
 * It can only appear in the replacement list of a parameterized macro.
-* It creates string literals out of a parameterized macro's arguments. This operation is what the C standard refers to as "stringization".
+* It creates string literals out of a parameterized macro's argument. This operation is what the C standard refers to as "stringization".
 * Assuming this macro definition ```#define PRINT_INT(x) printf(#x " = %d", x)``` and this declaration ```int a = 5;``` are in effect:
    * When ```PRINT_INT``` is invoked, it converts its argument's name into a string literal and concatenates it with ``` = %d``` to create a ```printf``` format string.
-   * ```PRINT_INT(a)``` expands to ```a = 5```.
+   * ```PRINT_INT(a)``` expands to ```printf("a" " = %d, a)```, which will print ```a = 5```.
 
 ### :small_blue_diamond: The ## Operator
 
@@ -161,7 +161,163 @@
 
 ### :small_blue_diamond: General Properties Of Macros
 
-*
+* General rules apply to both simple and parameterized macros:
+   * A macro's replacement list can contain other macro invocations.
+      * When the preprocessor expands a macro, it rescans the replacement list for other macro names.
+      * If another macro name is found, it will be replaced by its replacement list as well.
+      * This expand and rescan cycle will continue until all macro names have been replaced by their replacement lists.
+      * According to the C standard, if the original macro name reappears after expansion, it will not be expanded again. This point will be discussed further down.
+   * The preprocessor expands entire tokens only.
+      * Parts of tokens or tokens embedded in string literals, identifiers and character constants are not expanded.
+   * Unless undefined using the ```#undef``` directive, a macro definition remains in effect until the end of the file.
+      * Since they're handled by the preprocessor, macros don't abide by the compiler's scope rules.
+      * A macro defined in the middle of a function will remain in effect until the end of the file.
+   * Redefining a macro is not allowed.
+      * Creating a macro with the same name as an already defined macro is allowed, as long as:
+         * The tokens in both macros' replacement lists are exactly identical.
+         * The macros' parameters are exactly identical in name and number.
+         * Whitespace characters between tokens in both macros can be different.
+   * Macros can be undefined.
+      * The ```#undef``` directive allows us to remove the current definition of a macro.
+      * It has the following general form: ```#undef identifier```, where ```identifier``` is the name of a macro.
+
+### :small_blue_diamond: Parentheses In Macro Definitions
+
+* Macro replacement lists in C are usually riddled with parentheses. To the untrained eye, this might look unnecessary. But seasoned C programmers know very well that a shortage of parentheses in macro replacement lists can lead to some of C's most subtle bugs.
+* C programmers usually follow two rules when deciding whether or not to use parentheses in a macro replacement list.
+   * If the macro contains an operator, the whole replacement list should be enclosed in parentheses.
+   * If the macro has parameters, every parameter occurrence in the replacement list should be enclosed in parentheses.
+* These two rules mitigate the risk of the compiler applying operator precedence and associativity rules in ways we did not anticipate.
+
+### :small_blue_diamond: Creating Longer Macros
+
+* The comma operator ```,``` offers macros a great deal of versatility and allows writing replacement lists containing multiple expressions.
+* As an example, we can create a macro that performs an echo (read/write) every time it's invoked:
+```c
+#define ECHO(s) (gets(s), puts(s))
+```
+* It might be tempting to ask why we used the comma operator when we could have used a compound statement in the replacement list:
+```c
+#define ECHO(s) {gets(s); puts(s);}
+```
+* The compound statement in this case is problematic. Invoking the macro inside an ```if``` statement is a good example to illustrate why:
+```c
+if(/* condition */)
+   ECHO(s);
+else
+/* statement */
+```
+* When ```ECHO``` is expanded, it's replaced by the compound statement containing ```gets``` and ```puts```. Since the compound statement does not require a semicolon ```;``` after its right curly brace, the semicolon at the end of ```ECHO(s)``` is treated by the compiler as a null statement and the ```else``` clause is therefore orphaned. As a result, the compiler will throw an error.
+   * This problem can be avoided by not placing a semicolon after ```ECHO(s)```, but that makes the program look unnatural.
+* The comma operator ```,``` can help create sophisticated macros with replacement lists containing more than a single expression. It doesn't offer much help though if we want to create macros with multiple statements in the replacement list.
+   * Some C programmers use a trick to achieve this goal: They wrap all statements in a ```do``` loop whose controlling expression is always false.
+   ```c
+   #define EXAMPLE do {
+                      statement_1;
+                      statement_2;
+                      ...
+                      statement_n;
+                   } while(0)
+   ```
+   * The ```do``` loop's controlling expression being false, the compound statement will be executed once.
+   * The ```do``` statement is incomplete. It requires a semicolon ```;``` at the end. An invocation of this macro will look like this ```EXAMPLE;```.
+
+### :small_blue_diamond: Predefined Macros
+
+* C offers several macros built into the compiler itself no matter the C implementation.
+* No headers need to be included to use these macros.
+* These macros' replacement lists are either an integer constant or a string literal.
+* They provide information about the current compilation or about the compiler itself.
+* These predefined macros are:
+   * ```__LINE__```.
+      * Represents the current line number of the file being compiled.
+      * The line number is an integer constant.
+      * Typically used to identify the culprit when a program crashes or terminates prematurely.
+   * ```__FILE__```.
+      * Represents the name of the current file being compiled.
+      * The file name is a string literal.
+      * Typically used to pinpoint problematic statements that cause premature termination of the program.
+   * ```__DATE__```.
+      * Represents the date of compilation of the program.
+      * The date is a string literal in the form ```"Mmm dd yyyy"```.
+      * Can be used to distinguish between different compiled versions of the program.
+   * ```__TIME__```.
+      * Represents the time of compilation of the program.
+      * The time is a string literal in the form ```"hh:mm:ss"```.
+      * Can also be used to distinguish between different compiled versions of the program.
+   * ```__STDC__```.
+      *  Has the value ```1``` if the compiler used to compile the program conforms to the C standard (C89 or C99).
+
+### :small_blue_diamond: Additional Predefined Macros In C99
+
+* A C implementation is a compiler along with any other software necessary to execute C programs.
+* The C99 standard breaks down C implementations into two categories:
+   * Hosted implementations: Must accept all C programs that conform to the C99 standard.
+   * Freestanding implementations: Don't have to accept programs that use complex types or standard headers beyond a few of the most basic.
+* C99 introduces several new macros built into the compiler.
+* No headers need to be included to use these macros.
+* These predefined macros added by C99 are:
+   * ```__STDC__HOSTED__```.
+      * Represents the value ```1``` if the compiler belongs to a hosted implementation.
+      * Represents the value ```0``` if the compiler belongs to a freestanding implementation.
+   * ```__STDC__VERSION__```.
+      * Represents a long integer constant.
+      * This long integer provides information on the version of the C standard recognized by the compiler used to compile the program.
+      * It was first introduced by Amendment 1 to the C89 standard. It had the value ```199409L``` (Amendment 1 dates back to September 1994).
+      * For C99, it has the value ```199901L``` (C99 dates back to January 1999).
+      * This macro has a different value for every version and amendment to the C standard.
+   * The following three macros are defined for some C99 compilers and not defined for others:
+      * ```__STDC_IEC_559__```.
+         * This macro is defined and represents the value ```1``` if the compiler performs floating-point arithmetic according to the IEC 60559 standard.
+         * IEC 60559 is another name for the IEEE 754 standard.
+      * ```__STDC_IEC_559_COMPLEX__```.
+         * This macro is defined and represents the value ```1``` if the compiler performs complex arithmetic according to the IEC 60559 standard.
+      * ```__STDC_ISO_10646__```.
+         * This macro is defined and represents a long integer constant of the form ```yyyymmL``` if values of type ```wchar_t``` are represented by the codes in the
+         ISO/IEC 10646 standard.
+         * ```yyyy``` and ```mm``` represent the year and month of the considered ISO/IEC 10646 standard revision.
+
+### :small_blue_diamond: Empty Macro Arguments In C99
+
+* C99 allows supplying empty arguments to parameterized macros.
+* In most cases, when an empty argument is supplied to a parameterized macro, the preprocessor simply eliminates any occurrence of the corresponding parameter from the replacement list.
+* This rule has two noteworthy exceptions:
+   * When the missing argument is an operand of the ```#``` operator.
+      * When the preprocessor stringizes an empty argument, it produces an empty string ```""```.
+   * When the missing argument is an operand of the ```##``` operator.
+      * When provided an empty argument, the token-pasting operator ```##``` replaces it with an invisible placemarker token in the macro's replacement list.
+      * A placemarker token pasted together with an ordinary token disappears. The result is the ordinary token.
+      * A placemarker token pasted together with another placemarker token produces a single placemarker token.
+      * Any remaining placemarker tokens after macro expansion simply disappear.
+
+### :small_blue_diamond: Macros With A Variable Number Of Arguments In C99
+
+* In C89, parameterized macros have a fixed number of arguments.
+* C99 allows a parameterized macro to have an unlimited number of arguments.
+* Since functions in C have always had the ability to request an unlimited number of arguments, C99 granted this ability to macros as well. This was mainly done to allow parameterized macros to pass arguments to functions that request an unlimited number of arguments.
+* The definition of a parameterized macro with a variable number of arguments might look like this:
+```c
+#define EXAMPLE(a, ...) replacement_list
+```
+* The ```...``` token is called an "ellipsis". It should appear at the end of a parameterized macro's parameter list, if said macro has a variable number of arguments. It can be preceded by any number of ordinary arguments.
+* A special identifier usually appears in the replacement list of macro with a variable number of arguments.
+   * This is the ```__VA_ARGS__``` identifier.
+   * It represents all macro arguments that correspond to the ellipsis ```...```.
+   * When such a macro is invoked, all ordinary arguments are injected in the replacement list, each replacing their corresponding parameter.
+   * All arguments that correspond to the ellipsis will replace the ```__VA_ARGS__``` identifier in the replacement list, just the way they are in the macro invocation (even separating commas are preserved).
+   * These macros are commonly used to pass format strings and variables as arguments to the ```printf``` and ```scanf``` functions.
+
+### :small_blue_diamond: The __func__ identifier In C99
+
+* C99 provides the ```__func__``` identifier which can be useful for debugging.
+* The ```__func__``` identifier is not a preprocessor macro. As a matter of fact, it has nothing to do with the preprocessor.
+   * It's a special predefined identifier that the compiler automatically creates inside every function.
+   * Its type is a constant array of characters ```const char[]```.
+   * It's basically a string variable that holds the name of the currently executing function.
+   * It's exactly as though the following declaration were made at the top of the function's body: ```static const char __func__[] = "function_name";``` with ```function_name``` being the name of the enclosing function.
+* The ```__func__``` identifier is primarily used for two purposes.
+   * Logging function names when they're executed to locate potential bugs and errors.
+   * Creating a call stack, by informing every function of the name of the function that called it.
 
 ## :vertical_traffic_light: Conditional Compilation
 
