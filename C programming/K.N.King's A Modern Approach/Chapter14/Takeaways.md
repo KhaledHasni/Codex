@@ -321,6 +321,116 @@ else
 
 ## :vertical_traffic_light: Conditional Compilation
 
+* Conditional compilation is the process of excluding or including portions of a program's text when compiling it, depending on a condition that the preprocessor can test.
+
+### :small_blue_diamond: The #if and #endif Directives
+
+* C's ```#if``` directive performs a preprocessing test.
+   * It has the following general form: ```#if constant_expression```.
+   * The test fails if ```constant_expression``` has the value ```0```.
+   * The test succeeds if ```constant_expression``` has any nonzero value.
+* C provides another preprocessing directive that's usually used in tandem with the ```#if``` directive: The ```#endif``` directive.
+   * It has the following general form: ```#endif```.
+   * An ```#endif``` directive is used to signal the end of a preprocessing ```#if``` block.
+* When the preprocessor encounters an ```#if``` directive:
+   * It evaluates the ```constant_expression```.
+   * If it has a nonzero value, the block of code between the ```#if``` and ```#endif``` directives is left for the compiler to process.
+   * If its value is zero, the block of code between the ```#if``` and ```#endif``` directives is removed from the program text and won't be seen by the compiler.
+   * In both cases, the ```#if``` and ```#endif``` directives themselves are replaced by empty lines.
+* C's ```#if``` directive treats an undefined macro as a macro that has the value ```0```. Assuming ```UNDEFINED_MACRO``` is an undefined macro name:
+   ```c
+   #if UNDEFINED_MACRO /* This test will fail */
+   #endif
+   #if !UNDEFINED_MACRO /* This test will succeed */
+   #endif
+   ```
+
+### :small_blue_diamond: The defined Operator
+
+* C's preprocessor has only three operators.
+   * The "stringization" operator ```#```.
+   * The "token-pasting" operator ```##```.
+   * The ```defined```operator.
+* When applied to an identifier, the ```defined``` operator produces the value ```1``` if the identifier matches the name of a currently defined macro, otherwise, it produces the value ```0```.
+* C's ```defined``` operator is typically used in tandem with the ```#if``` directive to conditionally compile a block of code depending on whether or not a macro is defined.
+```c
+#if defined TEST
+/* This block of code will be compiled if a macro called TEST is defined */
+#endif
+```
+* Since the ```defined```operator tests whether or not a macro is defined:
+   * The macro can be defined without a value.
+   ```c
+   #define TEST
+   ```
+   * The macro can be defined and have the value ```0```.
+   ```c
+   #define TEST 0
+   ...
+   #if defined TEST
+   /* This block of code will be compiled */
+   #endif
+   ```
+* The ```defined``` operator's operand can be enclosed in parentheses.
+
+### :small_blue_diamond: The #ifdef and #ifndef Directives
+
+* C's ```#ifdef``` directive can be used to test whether an identifier matches the name of a currently defined macro.
+   * It has the following general form: ```#ifdef identifier```.
+   * ```#ifdef``` is exactly equivalent to ```#if defined```.
+   * ```#ifdef``` requires an ```#endif``` directive to enclose the block of code subject to conditional compilation.
+* C's ```#ifndef``` directive can be used to test whether an identifier is not a currently defined macro.
+   * It has the following general form: ```#ifndef identifier```.
+   * ```#ifndef``` is exactly equivalent to ```#if !defined```.
+   * Like ```#ifdef```, ```#ifndef``` also requires an ```#endif``` directive to enclose the block of code subject to conditional compilation.
+
+### :small_blue_diamond: The #elif and #else Directives
+
+* C allows ```#if```, ```#ifdef``` and ```#ifndef``` directives to be nested just like with ordinary ```if``` statements.
+* Some C programmers add a comment after each ```#endif``` directive to mention the matching ```#if```, ```#ifdef``` or ```#ifndef``` directive.
+* C also provides the ```#elif``` and ```#else``` directives to allow the preprocessor to perform multiple tests and conditionally compile multiple blocks of code accordingly.
+* ```#elif``` and ```#else``` are used in conjunction with ```#if```, ```#ifdef``` and ```#ifndef```.
+* C does not enforce any limit on the number of ```#elif``` directives that may appear between an ```#if``` and ```#endif``` pair of directives, nor does it require an ```#else``` directive to be present.
+```c
+#if expression_1
+/* Compiled if expression_1 is nonzero */
+#elif expression_2
+/* Compiled if expression_2 is nonzero */
+...
+
+#elif expression_n
+/* Compiled if expression_n is nonzero */
+#else
+/* Compiled if none of the above expressions have a nonzero value */
+#endif
+```
+
+### :small_blue_diamond: Uses Of Conditional Compilation
+
+* Conditional compilation can be useful in many situations.
+   * Debugging.
+      * It's common for C programmers to add ```printf``` calls in critical places of their code when debugging it.
+      * The idea is to be able to access the content of variables without using a debugger.
+      * These ```printf``` calls are only useful when debugging and are ideally left out of the final compiled code.
+      * C programmers customarily define a macro called ```DEBUG``` for this purpose.
+      * All calls to ```printf``` are enclosed in a pair of ```#if DEBUG``` and ```#endif``` directives.
+      * Once all bugs have been located and fixed, the program is recompiled with the following ```#define DEBUG 0```.
+   * Compiling a program for multiple platforms.
+      * It's not uncommon for a C program to be designed to run on different platforms.
+      * Some parts of the program might need to be compiled for one platform and not for another.
+      * C programmers usually resolve this problem by defining a program at the beginning of the program indicating the target platform.
+      * Every time the program is compiled with a new macro value, different blocks of code are conditionally compiled.
+   * Writing a program designed to be compiled with different compilers.
+      * Different compilers sometimes require slightly different versions of a program.
+      * Some compilers accept a standard version of C, while others don't.
+      * Some compilers provide machine-specific language extensions, while others don't.
+      * Conditional compilation can be used to allow a program to adjust to different types of compilers.
+   * Disabling blocks of code.
+      * This is often done by commenting out any code we don't want to compile.
+      * This can also be done using conditional compilation.
+      * A block of code left out using conditional compilation is said to be "conditioned out".
+   * Defining include guards.
+
 ## :toolbox: Other Directives
 
 ## :game_die: Miscellaneous
