@@ -433,4 +433,105 @@ else
 
 ## :toolbox: Other Directives
 
+### :small_blue_diamond: The #error Directive
+
+* The ```#error``` directive has the following general form: ```#error message```.
+   * ```message``` should be a series of tokens.
+   * When the preprocessor encounters an ```#error``` directive, it prints a message that includes the token sequence ```message```.
+   * Different compilers may print slightly varying messages, but all of them will include ```message```.
+* Upon encountering an ```#error``` directive, some compilers immediately abort compilation.
+   * The ```#error``` directive indicates a serious problem in the program.
+   * It's often used to alert the programmer of an abnormal behavior in their program.
+* The ```#error``` directive is usually used in conjunction with conditional compilation.
+   * The ```#error``` directive is used to signal situations that shouldn't happen during normal execution.
+   * It often appears in the ```#else``` clause of an ```#if```, ```#elif``` sequence.
+
+### :small_blue_diamond: The #line Directive
+
+* The ```#line``` directive has two general forms:
+   * ```#line n```.
+      * ```n``` is a sequence of digits that represents an integer between ```1``` and ```32767``` in C89 (```1``` and ```2147483647``` in C99).
+      * Each line in a program text has a rank. The first line in a given file is ranked ```1```, the second line is ranked ```2``` and so on.
+      * The ```#line``` directive in this form causes the subsequent line to be ranked ```n``` instead of its natural rank.
+      * All subsequent lines in the current file will be ranked ```n + 1```, ```n + 2``` and so on.
+   * ```#line n "file"```.
+      * This form of the ```#line``` directive is exactly the same as the first form, with one notable difference.
+      * ```"file"``` represents the name of a file.
+      * The lines that follow this directive in the current file are assumed to come from the file called ```"file"``` with line numbers starting at ```n```.
+* C allows using macros to specify the values of ```n``` and ```"file"``` in both forms of the ```#line``` directive.
+* The ```#line``` directive in its first form changes the value of the ```__LINE__``` macro.
+* The ```#line``` directive in its second form changes the values of both the ```__LINE__``` and ```__FILE__``` macros.
+* Most compilers will use the new line ranks created by the ```#line``` directive when generating error messages detected on subsequent lines.
+* It's worth asking why would we want to change line ranks in a program and produce error messages based on the new ranks, when all that seemingly does is make programs harder to debug. That's a legitimate question, and it can be answered as follows:
+   * The ```#line``` directive is rarely used by C programmers.
+   * It's used primarily by programs that generate C code as output ("yacc" is a good example of such a program).
+   * "yacc"'s input is a "grammar specification file" that describes the syntax of a language in terms of production rules and specifies what actions to take when each rule is matched. It also has an auxiliary C code section.
+   * "yacc" uses this input file to generate a C program called ```y.tab.c``` which implements a token parser. This file will usually contain big chunks of the C code fed into "yacc" by the programmer.
+   * The programmer then needs to compile ```y.tab.c``` in the usual manner. Therefore, any errors detected will be traced back to ```y.tab.c```.
+   * To work around this inconvenience, "yacc" inserts ```line``` directives in ```y.tab.c``` to trick the compiler into thinking the errors come from the original file provided by the programmer.
+
+### :small_blue_diamond: The #pragma Directive
+
+* The ```#pragma``` directive is used to request special behavior from the compiler.
+* The ```#pragma``` has the following general form ```#pragma tokens```.
+   * ```tokens``` are a sequence of arbitrary tokens.
+   * A ```#pragma``` directive can be very simple, with one single token. It can also be much more complex.
+   * Each C compiler has its own list of commands that can appear in a ```#pragma``` directive. The full list of commands can usually be found in each compilers' respective documentation.
+   * When it encounters an unrecognized command in a ```#pragma``` directive, the preprocessor simply ignores it. No errors or warnings are produced.
+* C89 provides no standard pragmas. They're all implementation-defined.
+* C99 provides three standard pragmas, all of which use STDC as the first token.
+   * ```FP_CONTRACT```.
+   * ```CX_LIMITED_RANGE```.
+   * ```FENV_ACCESS```.
+* C99 introduces the ```_Pragma``` operator that can be used in tandem with the ```#pragma``` directive.
+   * A ```_Pragma``` expression has the following general form ```_Pragma(string_literal)```.
+   * When the preprocessor encounters a ```_Pragma``` expression, it destringizes the provided string literal.
+   * Destringizing a string literal requires removing the enclosing ```"``` characters and replacing the escape sequences ```//``` and ```\"``` by ```/``` and ```"``` respectively.
+   * The resulting series of tokens are then provided to a ```#pragma``` directive.
+   * ```_Pragma("This is a dummy string literal")``` is equivalent to ```#pragma This is a dummy string literal```.
+* The ```_Pragma``` operator can be used in a macro's replacement list.
+* The ```_Pragma``` operator was primarily introduced to work around one of the preprocessor's biggest limitations: The fact that a preprocessing directive can't generate another preprocessing directive.
+   * By using the ```_Pragma``` operator in the replacement list of a macro, we can create a preprocessing directive by way of a macro expansion.
+
 ## :game_die: Miscellaneous
+
+* "yacc" (Yet Another Compiler-Compiler) is a UNIX utility that generates part of a compiler. Its GNU version is called "Bison".
+* A ```#``` symbol on a line by itself is called the "null directive". It is perfectly legal. It has no effect and is completely ignored by the preprocessor.
+   * Some programmers use null directives as spacing in conditional compilation blocks.
+   ```c
+   #if (condition)
+   #
+   #error "This is a dummy error message"
+   #
+   #endif
+   ```
+* Most C programmers use two rules to determine whether a constant (numeric, character, string) should be defined as a macro.
+   * The constant is used more than once in the program.
+   * The constant's value might be changed in the future.
+* The ```#``` operator replaces ```"``` and ```\``` by ```\"``` and ```\\``` respectively when stringizing its operand.
+* Some macro expansion rules in C are counter-intuitive and may not be very well known among C programmers. One example of such rules is:
+   * A macro parameter used as an operand of the ```##``` operator in a macro's replacement list is not expanded at the time of substitution.
+   * Assuming the following macro definition is in effect ```#define CONCAT(a,b) (a##b)```:
+      * ```CONCAT(a, CONCAT(b,c))``` will not expand in the way most people expect.
+      * The inner macro invocation is an operand of ```##``` in ```CONCAT```'s replacement list. Consequently, it's not expanded at the time of substitution as stated by the rule.
+      * The result is that ```CONCAT(a,CONCAT(b,c))``` produces ```aCONCAT(b,c)```.
+      * Since there's no macro called ```aCONCAT```, this result can't be further expanded.
+      * One way to work around this is to define a second macro that calls the first one: ```CONCAT2(a,b) CONCAT(a,b)```.
+      * ```CONCAT2(a, CONCAT2(b,c))``` now expand to ```abc``` as we'd expect.
+      * The difference is that ```CONCAT2```'s replacement list does not contain the ```##```operator.
+   * Similarly, a macro parameter used as an operand of the ```#``` operator in a macro's replacement list is not expanded at the time of substitution.
+* If the name of the original macro reappears during preprocessor rescanning, it is not expanded again. This rule is explicitly stated in the C standard.
+* A hosted implementation is used for programs that rely on an underlying operating system for a myriad of services. A freestanding implementation on the other hand is used for programs that require little to no operating system support. Examples of such programs are operating system kernels and programs designed to run on resource-constrained embedded systems.
+* The preprocessor is less sophisticated, and knows much less about the C programming language than the compiler. That being said, it knows enough to be able to evaluate constant expressions in an ```#if``` directive for example.
+* The operands in a preprocessor constant expression are usually one of three kinds:
+   * Constants.
+   * Macros that represent constants.
+   * An expression involving the ```defined``` operator.
+* C's ```#ifdef``` and ```#ifndef``` were part of the language from the very beginning. The same can't be said of the ```defined``` operator, which was added to the language during standardization.
+   * The ```defined``` operator might seem futile since it can largely be replaced by the ```#ifdef``` and ```#ifndef``` directives.
+   * The ```defined``` operator was added to the language to offer more flexibility when writing preprocessing directives.
+      * The ```defined``` operator can be used to write the following ```#if defined(condition1) && defined(condition2)```.
+      * The same conditional expression can't be written using the ```#ifdef``` directive.
+* Comments in a C program are processed before preprocessing directives are executed.
+   * For this reason, if a block of code contains an unterminated comment, it will produce an error when compiled, even if this block is conditioned out using conditional compilation.
+   * An unpaired ```"``` character can also result in undefined behavior even if it appears in a conditioned out block of code.
