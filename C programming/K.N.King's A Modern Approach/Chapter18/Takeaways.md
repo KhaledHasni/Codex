@@ -226,7 +226,7 @@ void dummy_function(int d, register int e) {
    * The ```#define``` directive is used to create names for numeric, character and string constants. The ```const``` qualifier on the other hand can be used to create read-only objects of any type, including pointers, structures, unions and arrays.
    * The same set of variable scope rules apply to ```const``` objects. The same can't be said for constants created using the ```#define``` directive.
    * Debuggers cannot access the value of a constant created using the ```#define``` directive, unlike the value of a ```const``` object.
-   * A ```const``` object has an address in memory and can therefore be used as the operand of the indirection operator ```&```. The same does not apply to a constant created using the ```#define``` directive. 
+   * A ```const``` object has an address in memory and can therefore be used as the operand of the indirection operator ```&```. The same does not apply to a constant created using the ```#define``` directive.
    * ```const``` objects cannot be used where constant expressions are expected. Macros created using the ```#define``` directive can.
       * Common examples include array bounds and switch statement case labels.
       ```c
@@ -240,6 +240,75 @@ void dummy_function(int d, register int e) {
    * Note that using a ```const``` integer object as the size of an array in its declaration is legal in C99 if the array has automatic storage duration (in which case it will be treated as a variable-length array), but not if it has static storage duration.
 
 ## :pencil2: Declarators
+
+* A declarator in a C declaration is an identifier that represents the object being declared, whether that's a variable or a function. The identifier can be combined with the ```*```, ```[]``` and ```()``` symbols to form more complex declarators.
+   * In its simplest form, a declarator is just an identifier.
+      * ```int a;```. ```a``` in this case is a declarator.
+   * A declarator containing an identifier preceded by the asterisk ```*``` symbol represents a pointer variable.
+      * ```int *p;```. ```p``` in this case is a pointer variable.
+   * A declarator containing an identifier followed by the ```[]``` symbol represents an array.
+      * ```int array[10];```. ```array``` in this case is an array.
+      * The brackets ```[]``` in an array declarator can be left empty in three cases.
+         * The array has an initializer, in which case the compiler can deduce the size of the array based on the size of the initializer.
+         * The array declarator is a function parameter.
+         * The array's storage class is ```extern```, in which case the array is defined elsewhere in the program so the compiler doesn't require the declarator to provide a size for the array.
+         * Note that only the first set of brackets can be left empty in a multidimensional array declarator.
+      * C99 allows the brackets of an array function parameter to contain two other sets of symbols.
+         * The keyword ```static``` followed by an expression that evaluates to the array's minimum length.
+         * The asterisk ```*``` symbol in a function prototype which indicates the array parameter is a variable-length array.
+   * A declarator containing an identifier followed by the ```()``` symbol represents a function.
+      * C allows function declarators to omit parameter names.
+      ```c
+      void dummy_function(int , int* , int[]);
+      ```
+      * C even allows function declarators to have an empty set of parentheses.
+      ```c
+      void dummy_function();
+      ```
+      * An empty set of parentheses in a function declarator in C does not mean the function takes no arguments (that would warrant the keyword ```void``` to be put between parentheses). Instead, it means that the function can take an unspecified number of parameters of any type.
+         * Leaving a function declarator's set of parentheses empty is a dangerous practice that has largely been rendered obsolete. It's perfectly valid syntax and can still be used in modern C programming, but it's strongly discouraged since it doesn't allow the compiler to perform type checking during function invocation.
+
+### :small_blue_diamond: Deciphering Complex Declarators
+
+* Declarators in C can be complex and quite tricky to understand. That being said, there are two rules of thumb that we can use to break down any declarator no matter how complex.
+   * Declarators should be read from inside out.
+      * We start by locating the identifier in the declarator. The identifier is the name of the object being declared.
+      * We start figuring out the declarator from there.
+   * The ```[]``` and ```()``` symbols always take precedence over the ```*``` symbol in a declarator.
+      * When an identifier is preceded by the ```*``` symbol and followed by the ```[]```, it's an array, not a pointer.
+      * When an identifier is preceded by the ```*``` symbol and followed by the ```()```, it's a function, not a pointer.
+      * These precedence rules can be overridden by the use of parentheses.
+* Applying these rules to the following examples will yield the following results:
+   * ```int *p[8];```.
+      * First, we locate the identifier in the declarator. In this case, the identifier is ```p```.
+      * Then we notice that ```p``` is preceded by the ```*``` symbol (so ```p``` might be a pointer) and followed by the ```[]``` symbol (so ```p``` might be an array). Rules of precedence dictate that ```[]``` always takes precedence over ```*```, so ```p``` is an array of pointers to integer values.
+   * ```int *p(float);```.
+      * First, we locate the identifier in the declarator. In this case, the identifier is ```p```.
+      * Then we notice that ```p``` is preceded by the ```*``` symbol (so ```p``` might be a pointer) and followed by the ```()``` symbol (so ```p``` might be a function). Rules of precedence dictate that ```()``` always takes precedence over ```*```, so ```p``` is a function that takes a floating-point argument and returns a pointer to an integer value.
+   * ```void (*p)(int);```.
+      * First, we locate the identifier in the declarator. In this case, the identifier is ```p```.
+      * Then we notice that ```p``` is preceded by the ```*``` symbol (so ```p``` might be a pointer) and followed by the ```()``` symbol (so ```p``` might be a function). Rules of precedence dictate that ```()``` always takes precedence over ```*```, but these rules are overridden here by parentheses enclosing ```*p```. This means ```p``` is a pointer here. Since ```(*p)``` is followed by a ```()``` symbol, then ```p``` is a pointer to a function that takes an integer argument and returns nothing.
+   * ```int *(*p[10])(void);```.
+      * First, we locate the identifier in the declarator. In this case, the identifier is ```p```.
+      * Then we notice that ```p``` is preceded by the ```*``` symbol (so ```p``` might be a pointer) and followed by the ```[]``` symbol (so ```p``` might be an array). Precedence rules dictate that ```[]``` takes precedence over ```*```, so ```p``` is an array of pointers. Next we notice that ```(*p[10])``` is preceded by the ```*``` symbol and followed by the ```()``` symbol. Again, according to precedence rules, ```()``` takes precedence over ```*``` so ```p``` is an array of pointers to functions that take no arguments and return pointers to integer values.
+* Some objects are illegal in C and therefore cannot be declared.
+   * Functions that return functions.
+      * C forbids a function from returning a function.
+      * ```void f(int)(int);``` is illegal in C.
+      * To work around this limitation, C allows a function to return a pointer to a function.
+   * Functions that return arrays.
+      * C forbids a function from returning an array.
+      * ```int f(void)[];``` is illegal in C.
+      * To work around this limitation, C allows a function to return a pointer to an array.
+   * Arrays of functions.
+      * ```int a[8](int);``` is illegal in C.
+      * To work around this limitation, C allows the creation of arrays of pointers to functions.
+* Type definitions are sometimes used to simplify complex declarators.
+   * ```void (*p)(int);``` for example is functionally equivalent to the following:
+   ```c
+   typedef void FCT(int);
+   FCT *p;
+   ```
 
 ## :seedling: Initializers
 
