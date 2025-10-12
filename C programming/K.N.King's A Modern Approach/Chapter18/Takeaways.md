@@ -214,6 +214,31 @@ void dummy_function(int d, register int e) {
 
 ## :bookmark: Type Qualifiers
 
+* C provides two type qualifiers: ```const``` and ```volatile```.
+* C99 provides a third type qualifier that can only be used with pointers: ```restrict```.
+* ```const``` can be used to declare variable-like objects that are read-only.
+   * The program can access the value of a ```const``` object but is not allowed to change it.
+* C programmers habitually declare objects to be ```const``` for several reasons:
+   * A ```const``` object provides a good hint for anyone reading the program that the object in question is not supposed to be changed by the program. In that sense, the ```const``` type qualifier serves as a form of documentation.
+   * Declaring an object that's not supposed to be changed to be ```const``` is a good defense mechanism since the compiler will catch any attempt to change the value of the object and produce an error.
+   * In many cases, especially when executing a program on a resource-constrained device (which is common when writing code for embedded systems), the ```const``` qualifier is a hint to the compiler to store data in read-only memory (ROM).
+* Since the ```const``` type qualifier is used to create read-only "constant" objects, it might be tempting to view it in the same light as the ```#define``` preprocessing directive, which is customarily used to create names for constants. This however is not a good way of looking at it, since there are significant differences between the two.
+   * The ```#define``` directive is used to create names for numeric, character and string constants. The ```const``` qualifier on the other hand can be used to create read-only objects of any type, including pointers, structures, unions and arrays.
+   * The same set of variable scope rules apply to ```const``` objects. The same can't be said for constants created using the ```#define``` directive.
+   * Debuggers cannot access the value of a constant created using the ```#define``` directive, unlike the value of a ```const``` object.
+   * A ```const``` object has an address in memory and can therefore be used as the operand of the indirection operator ```&```. The same does not apply to a constant created using the ```#define``` directive. 
+   * ```const``` objects cannot be used where constant expressions are expected. Macros created using the ```#define``` directive can.
+      * Common examples include array bounds and switch statement case labels.
+      ```c
+      const int n = 10;
+      int array[n]; // Illegal
+
+      switch(/* dummy_expression */) {
+         case n: // Illegal
+      }
+      ```
+   * Note that using a ```const``` integer object as the size of an array in its declaration is legal in C99 if the array has automatic storage duration (in which case it will be treated as a variable-length array), but not if it has static storage duration.
+
 ## :pencil2: Declarators
 
 ## :seedling: Initializers
