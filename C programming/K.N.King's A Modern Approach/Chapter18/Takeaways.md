@@ -312,6 +312,31 @@ void dummy_function(int d, register int e) {
 
 ## :seedling: Initializers
 
+* C allows specifying initial values for variables while they're being declared. This is called "variable initialization".
+* Variable initialization is performed by placing the ```=``` symbol after the declarator, followed by an initializer.
+   * The ```=``` symbol in this case is not the assignment operator. Initialization and assignment are not the same thing in C.
+* An initializer may vary depending on the object being initialized.
+   * A simple variable's initializer is an expression with the same type as the variable.
+      * If the initializer does not share the variable's type, assignment type conversion rules are applied to convert the initializer's type.
+   * A pointer variable's initializer is either a pointer expression with the same type as the pointer variable being declared, or ```void *```.
+   * An array, a structure or a union initializer is usually a set of comma-separated values enclosed in braces.
+      * C99's designated initializers offer a slightly different form of brace-enclosed initializers.
+* The following are some lesser-known rules related to initializers in C.
+   * The initializer for a variable with static storage duration must be a constant expression, otherwise the program would not even compile.
+   * The initializer for a variable with automatic storage duration doesn't have to be a constant expression and can be a variable or a function parameter.
+   * A brace-enclosed initializer for an array, structure, or union must only contain constant expressions. C99 alleviates this restriction by allowing brace-enclosed initializers to contain variables with automatic storage duration.
+   * An automatic structure or union can be initialized using another structure or union.
+   ```c
+   void dummy_function(struct dummy_struct struct1) {
+      struct dummy_struct struct2 = struct1;
+   }
+   ```
+* The initial value of an uninitialized variable depends on its storage duration.
+   * If the variable has automatic storage duration, its initial value is unpredictable and may even change every time it comes into existence.
+   * If the variable has static storage duration, it's by default initialized to zero.
+      * This initialization is type-aware. In other words, a variable with type ```int``` is initialized to ```0```, a variable with type ```float``` is initialized to ```0.0```, a pointer variable is initialized to ```NULL``` and so on.
+      * This is in contrast to a function like ```calloc``` which simply sets memory bits to ```0```.
+
 ## :zap: Inline Functions
 
 ## :game_die: Miscellaneous
