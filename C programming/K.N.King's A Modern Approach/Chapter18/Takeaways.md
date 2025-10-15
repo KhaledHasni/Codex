@@ -437,3 +437,23 @@ void dummy_function(int d, register int e) {
    * This second definition will be used to resolve function invocations if the compiler chooses not to expand the function inline.
 
 ## :game_die: Miscellaneous
+
+* C99 treats selection statements and iteration statements, along with their inner statements as entire blocks.
+   * This rule was introduced to avoid an undefined behavior trap that might arise as a result of using compound literals within these statements.
+   * An ```if``` statement for example has three blocks in C99: The ```if``` clause's statement, the ```else``` clause's statement and the entire ```if``` statement.
+* Storage for an automatic variable is allocated when the surrounding block is executed.
+   * This rule has one exception: C99's Variable-Length Arrays declared inside blocks.
+   * A VLA's size is not yet known when the enclosing block begins to execute.
+   * Storage for a VLA declared inside a block is allocated when its declaration is reached.
+* When a compiler translates a source file into object code, it keeps track of the different types of linkage associated with each name and stores them in a table in the object code. By the time the linker processes the object code, it will have access to all names along with their linkage.
+   * The linker does not see names with no linkage.
+* An object having block scope and external linkage at the same time is not very intuitive, so let's take a look at an example:
+   * Assuming a variable is declared in a source file, at the outermost level of nesting.
+   * This variable will have external linkage by default.
+   * Let's assume a function defined in a different source file needs access to that variable.
+   * This function can declare that variable with the keyword ```extern```.
+   * The result is that the variable declared in the function has block scope and external linkage at the same time.
+* C's ```const``` objects not being allowed in contexts that require constant expressions might seem counter-intuitive. The following points explain why this is the case:
+   * ```const``` in C is much more appropriately seen as "read-only" rather than "constant".
+   * A ```const``` object that's also ```volatile``` cannot be changed by the program, but can still be changed through other mechanisms since it's ```volatile```.
+   * If a ```const``` object is declared inside a function and initialized to a value that depends on the function's parameter, the object will effectively have a different value every time the function is called with a different set of arguments.
