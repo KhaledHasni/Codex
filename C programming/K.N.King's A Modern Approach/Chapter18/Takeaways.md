@@ -339,4 +339,101 @@ void dummy_function(int d, register int e) {
 
 ## :zap: Inline Functions
 
+* C99 offers a new category of declaration specifiers that's unique to function declarations.
+   * This category includes a single keyword: ```inline```.
+* Calling a function in C is not as straightforward as it seems once we look under the hood. At the machine level, several tasks need to be performed for a function to be called.
+   * Several instructions might need to be executed in preparation for the call.
+   * A jump instruction needs to be executed to transfer control to the start of the function.
+   * The function's arguments will need to be copied.
+   * The function's stack frame needs to be created.
+   * Returning from a function requires executing several other instructions on behalf of the calling function and the one being called.
+   * These tasks are collectively referred to as "function call overhead".
+* Function overhead can considerably slow a program down especially when a lot of function calls are involved.
+* C89’s way of mitigating function call overhead was to use parameterized macros instead of functions.
+* C99 offers a different solution: ```inline``` functions.
+   * An ```inline``` function is an implementation strategy whereby the compiler can directly replace a function invocation with its body.
+   * This avoids the overhead associated with function calls but may cause a slight increase in the size of the compiled program.
+   * ```inline``` affects code generation choices, but not linkage or storage.
+* The ```inline``` keyword is a suggestion to the compiler to minimize function overhead as much as possible, perhaps by performing an inline expansion when the function is invoked.
+   * The compiler is free to honor or ignore this request.
+
+### :small_blue_diamond: Inline Definitions
+
+* Getting a grasp of how the linker handles inline definitions is not as straightforward as it seems. The following points outline the issue C99 designers tried to solve with regard to linking ```inline``` functions:
+   * Assuming a function is declared at the outermost level of nesting outside all functions in a program, it will by default have external linkage.
+   * If this function is declared ```inline```, then the compiler will be able to expand it inline whenever it's called.
+   * Since the function has external linkage, other source files can call it and the compiler will be able to expand those calls inline.
+   * Each time it encounters a call of the ```inline``` function, the compiler emits a definition of that function. The idea is to keep that definition in the translation unit where the function was called, if the compiler chooses not to expand it inline.
+   * If multiple source files call the ```inline``` function, each of them will have its own copy of the function's definition, which violates one of C's fundamental linkage rules: An externally linked object must have a single definition.
+* C programmers have three ways of working around this issue:
+   * :small_blue_diamond: Adding ```static``` to the ```inline``` function.
+   ```c
+   // This definition is in a source file dummy.c
+   static inline int dummy_add(int a, int b) {return a + b;}
+   ```
+   * If the function is defined in a source file, it now has internal linkage thanks to the ```static``` storage class.
+   * The function is not visible from other source files. As a result, they can include their own definitions of functions with the same name which may or may not be the identical.
+   * At link time, every translation unit will have its own internal copy of the function's definition.
+   ```c
+   // This definition is in a header file dummy.h
+   static inline int dummy_add(int a, int b) {return a + b;}
+   ```
+   * If the function is defined in a header file, it now has internal linkage as well, thanks to the ```static``` storage class.
+   * Every translation unit that includes this header file will have its own internal copy of the function's definition.
+
+   * :small_blue_diamond: Creating one external function definition.
+   ```c
+   // This goes in a header file dummy.h
+   inline int dummy_add(int a, int b) {return a + b;}
+
+   // This goes in a single source file dummy.c
+   extern int dummy_add(int a, int b);
+   ```
+   * This provides a single externally visible definition of the function that the linker can resolve all uninlined calls to.
+   * In other words, if the compiler encounters a call to this function in a different source file and chooses not to expand it inline, it will have to resolve that call to this one externally visible definition.
+
+   * :small_blue_diamond: Creating a second identical function definition in a source file.
+   ```c
+   // This goes in a header file dummy.h
+   inline int dummy_add(int a, int b) {return a + b;}
+
+   // This goes in a source file dummy.c
+   int dummy_add(int a, int b) {return a + b;}
+   ```
+   * The second definition has to be external.
+   * It must not be ```inline```.
+   * The two definitions must be identical.
+   * This approach is technically sound but stylistically discouraged because of redundancy and risk of inconsistency.
+
+### :small_blue_diamond: Summary
+
+* The C99 standard states: "If a function is declared with ```inline``` and also with ```extern``` in one translation unit, the definition is an external definition. Otherwise, it’s an inline definition that does not create an external definition."
+   * This means an ```inline``` function does not have external linkage unless the ```extern``` storage class is explicitly used.
+   * If the ```inline``` function has external linkage by default, its default linkage is overridden.
+* C provides three ways of dealing with ```inline``` functions.
+   * Using the ```static``` storage class so the function has internal linkage in all translation units that include it.
+   * Creating a unique externally visible definition while including the ```inline``` function in multiple source files.
+   * Creating a duplicate definition of the ```inline``` function in a separate source file and making sure the two definitions are identical.
+* The general rule in C99 can be stated as follows:
+   * If all top-level declarations of a function in a file include the keyword ```inline``` but not ```extern```, then the definition of the function in that file is ```inline```.
+   * If the function is called anywhere in the program (including the file in which it is defined), an external definition of the function will have to be provided.
+   * The two definitions must be consistent.
+
+### :small_blue_diamond: Restrictions On Inline Functions
+
+* C99 enforces some restrictions on ```inline``` functions.
+   * An ```inline``` function cannot reference a variable with internal linkage.
+   * An ```inline``` function cannot define a modifiable ```static``` variable.
+   * An ```inline``` function can define a ```const```, ```static``` variable.
+
+### :small_blue_diamond: Inline Functions With GCC
+
+* GCC supported ```inline``` functions prior to the C99 standard.
+* Inlining functions in C99 requires enabling optimization using the ```-O``` compiler flag.
+* Older GCC compilers used to support another scheme that allowed sharing an ```inline``` function between multiple source files.
+   * The idea is to create a definition of the function in a header file, specifying that the function is both ```inline``` and ```extern```.
+   * Include that header file in all source files that need to call the function.
+   * Redefine the function in one of the source files without the keywords ```inline``` and ```extern```.
+   * This second definition will be used to resolve function invocations if the compiler chooses not to expand the function inline.
+
 ## :game_die: Miscellaneous
