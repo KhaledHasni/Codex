@@ -96,7 +96,7 @@ else
 ```
 * The last ```else``` clause in a cascaded ```if``` statement is not mandatory.
 * The excessive nesting of ```if``` statements can make a program hard to read. Correctly indenting ```if``` and ```else``` clauses could help make it a bit more readable.
-* The "dangling else" problem is notorious when it comes to nesting if statements. This problem arises when a programmer matches an ```else``` clause with the wrong ```if``` clause.
+* The "dangling else" problem is notorious when it comes to nesting ```if``` statements. This problem arises when a programmer matches an ```else``` clause with the wrong ```if``` clause.
 * C abides by a rule stating that an ```else``` clause is always matched with the nearest ```if``` clause that is yet to be paired with an ```else```.
 * Using compound statements with all ```if``` and ```else``` clauses can help avoid the dangling else problem.
 * Just like C's ```if``` statement allows a program to perform one of two actions depending on the value of a condition, C provides an operator that allows an expression to produce one of two values depending on the value of an expression. This operator is called the "conditional operator".
@@ -111,7 +111,7 @@ else
    * If ```expression1``` is false, ```expression3``` is evaluated and its value is the value of the entire conditional expression.
 * C's conditional operator has a higher level of precedence than C's assignment operators.
 * C's conditional operator has a lower level of precedence compared to all other operators discussed so far (arithmetic operators, increment/decrement operators, relational operators, equality operators and logical operators).
-* Conditional expressions are most commonly used in function return statements, printf calls and macro definitions.
+* Conditional expressions are most commonly used in function return statements, ```printf``` calls and macro definitions.
 * C89 does not provide a boolean type. C programmers have found several ways to work around this deficiency:
    * Using integer variables instead.
    * Defining preprocessor macros like ```#define TRUE 1``` and ```#define FALSE 0```.
