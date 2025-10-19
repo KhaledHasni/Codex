@@ -141,7 +141,7 @@ while(expression2){
    * A program that jumps back and forth can quickly become unmaintainable.
 * The null statement can be used anywhere a statement is allowed. In practice, it's usually used for two purposes only and they're both fairly rare:
    * Indicating that a loop body is empty.
-   * Creating a label at the end of a block such as a compound statement or function body. A label requires a statement after the colon ```:```, but since we're only creating the label to mark the end of the block, we can use a null statement.
+   * Creating a label at the end of a block such as a compound statement or a function body. A label requires a statement after the colon ```:```, but since we're only creating the label to mark the end of the block, we can use a null statement.
 * Some C programmers use different techniques to highlight their empty loop bodies:
    * The null statement.
    ```c

@@ -48,8 +48,8 @@
    * ```f```: Displays a floating-point number in fixed decimal format.
    * ```g```: Displays a floating-point number in either exponential or fixed decimal format depending on the number's size.
       * It won't display the decimal point if the value has no digits after the decimal point.
-      * It won't display trailing zeros in contrast to the f specifier.
-      * Usually used with floating-point numbers whose size can't be predicted when writing a program, or whose size may vary substantially at runtime.
+      * It won't display trailing zeros in contrast to the ```f``` specifier.
+      * Usually used with floating-point numbers whose sizes can't be predicted when writing a program, or whose sizes may vary substantially at runtime.
       * It's mostly left up to the compiler to choose which of the two formats to use, but it's safe to assume that reasonably-sized numbers will be displayed in fixed decimal form, while very large/small numbers will be displayed in exponential form.
 * The precision ```p``` can mean a lot of things depending on the conversion specifier:
    * ```d```: ```p``` indicates the minimum number of digits to be displayed. Extra zeros can be added to reach the required number. If ```p``` is removed, it's as if it had the value ```1```.
@@ -128,5 +128,5 @@
    * printf: ```%i``` and ```%d``` are equivalent.
    * scanf: ```%d``` reads an integer item in decimal base 10 form while ```%i``` can read an integer item in decimal, octal or hexadecimal form. ```%i``` reads ```012``` for example as ```10``` (```012``` in octal is equivalent to ```10``` in decimal) and ```0xA``` (or ```0XA```) as ```10```.
 * Two consecutive ```%``` characters in a printf format string are printed as one ```%``` character.
-* Printing the ```\t``` escape sequence is supposed to advance the cursor to the next tab stop. C has no influence on how far apart tab stops are. They're typically 8 characters apart but it's entirely up to the operating system.
+* Printing the ```\t``` escape sequence is supposed to advance the cursor to the next tab stop. C has no influence on how far apart tab stops are. They're typically ```8``` characters apart but it's entirely up to the operating system.
 * Input streams of characters are stored in a hidden buffer that scanf has access to. scanf "putting back" characters simply means leaving them in the buffer.

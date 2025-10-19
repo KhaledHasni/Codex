@@ -89,7 +89,7 @@ When both division operands have the same sign, both these rounding techniques y
 * Using an expression or a constant or any other non-lvalue as ```=```'s left operand will result in a compilation error.
 * C provides compound assignment operators that allow us to overwrite the value of a variable with a new value computed using the old value.
    * ```i += 1``` performs the same task as ```i = i + 1```.
-* C provides a total of 10 compound assignment operators.
+* C provides a total of ```10``` compound assignment operators.
 * Assuming ```v``` is a variable and ```e``` is an expression:
    * ```v += e``` adds the value of ```e``` to that of ```v``` and stores the result in ```v```.
    * ```v -= e``` subtracts the value of ```e``` from that of ```v``` and stores the result in ```v```.
@@ -160,15 +160,15 @@ When both division operands have the same sign, both these rounding techniques y
 
 ## :game_die: Miscellaneous
 
-* C provides no exponentiation operator. To raise an integer to a small integer power, repeated multiplication is usually the way to go. To raise a number to a noninteger power, we usually use the pow function.
-* The remainder operator ```%``` requires integer operands. For nonintegers, we can use the fmod function.
+* C provides no exponentiation operator. To raise an integer to a small integer power, repeated multiplication is usually the way to go. To raise a number to a noninteger power, we usually use the ```pow``` function.
+* The remainder operator ```%``` requires integer operands. For nonintegers, we can use the ```fmod``` function.
 * In both C89 and C99, the division and remainder rules for operands of different signs are set up to always ensure ```(a / b) * b + (a % b)``` is equal to ```a``` provided that ```a / b``` is representable. In other words, ```a / b``` fits into the type of the result without overflowing.
 * No matter the C standard, no matter the sign of the operands, ```(a / b) * b + (a % b)``` is always satisfied.
 * By 1999, most CPUs were designed to truncate the result of a division toward zero regardless of the operands' signs, which explains why this was included in the C99 standard.
 * An rvalue is an expression that can appear on the right side of an assignment operator. It can be a constant, a variable or an expression.
 * ```v += e``` isn't necessarily equivalent to ``` v = v + e```. In the former, ```v``` is evaluated only once. In the latter however, ```v``` is evaluated twice. Any side effect that may result from evaluating ```v``` will therefore occur once in the former and twice in the latter.
 * It might be tempting to ask why C provides the increment ```++``` and decrement ```--``` operators when they come with their fair share of complexity and there's other ways to achieve the same goal. The answer to this is layered. C most likely inherited these operators from Ken Thompson's B language which used a compiler that would generate a more compact translation for ```++i``` compared to ```i = i + 1;```. These operators have also become a staple of C and have made their way into most of the language's idioms. Nowadays, they continue to be used mostly thanks to the convenience they provide.
-* The increment ```+``` and decrement ```--``` operators can be applied to floating-point operands.
+* The increment ```++``` and decrement ```--``` operators can be applied to floating-point operands.
 * An expression in C, by definition, represents a value.
 * There are various kinds of sequence points in C:
    * The end of an expression statement is a sequence point. When it's reached, all side effects from the expression must have been performed. The next statement can't begin to execute until that has taken place.
