@@ -71,9 +71,9 @@ struct {
    * Each value in the initializer is labeled by the name of the corresponding member.
    ```c
    struct {
-    int number;
-    char char_array[ARRAY_SIZE];
-    int another_number;
+     int number;
+     char char_array[ARRAY_SIZE];
+     int another_number;
    } var1 = {.number = 5, .char_array = "dummy_var1", .another_number = 10},
      var2 = {.number = 3, .char_array = "dummy_var2", .another_number = 6};
    ```
@@ -113,10 +113,108 @@ struct {
    * The assignment operator can only be used with structures of compatible types.
       * Two structures declared simultaneously are compatible.
       * Two structures declared using the same structure tag are compatible (structure tags will be discussed further down).
-      * Two structures declared using the same typedef name are compatible.
+      * Two structures declared using the same ```typedef``` name are compatible.
    * C's equality operators can't be used to compare the members of two structures.
 
 ## :label: Structure Types
+
+* Declaring individual structure variables can be handy for one-off declarations, but a problem arises as soon as we need to declare multiple variables with the same structure members.
+   * The technique discussed in the first section can still be useful if all structure variables need to be declared at the same time in the program.
+   * Declaring the different structure variables individually in different places in the program has several issues:
+      * It introduces a considerable amount of redundancy.
+      * The resulting structure variables are not compatible despite having the same members.
+         * Recall that, for two structure variables to be compatible, they need to satisfy one of the following:
+            * Declared at the same time in the program.
+            * Declared using the same structure tag.
+            * Declared using the same ```typedef``` name.
+         * They can't be copied using the assignment operator.
+      * The resulting program can be hard to maintain, with every change affecting a structure variable declaration needing to be duplicated several times.
+      * The resulting structure variables can't be used as function arguments since they don't have a type.
+* C provides two ways to name a "class" of structures.
+   * Declaring structure tags.
+   * Defining a type name using ```typedef```.
+
+### :small_blue_diamond: Declaring A Structure Tag
+
+* A structure tag in C is a name assigned to a "class" of structures that share the same members.
+```c
+struct var {
+  int number;
+  char char_array[ARRAY_SIZE];
+  int another_number;
+};
+```
+* The previous example declares a structure tag called ```var``` that can be used to declare other structure variables with the same set of members.
+* The semicolon ```;``` at the end of the declaration is mandatory and part of the structure tag declaration's syntax.
+* A structure tag can be used to declare structure variables individually or in groups.
+   * ```struct var var1;``` declares a structure variable called ```var1``` that has three members: ```number```, ```char_array``` and ```another_number```.
+   * ```struct var var1, var2;``` declares two structure variables, ```var1``` and ```var2``` that both have the same three members.
+   * The ```struct``` keyword cannot be omitted from either declaration since ```var``` is just a structure tag and not a type name.
+* A structure tag does not conflict with any other name in the program.
+   * In other words, a structure tag can share a name with a variable or any other object in a program.
+* A structure tag declaration can simultaneously declare structure variables.
+```c
+struct var {
+  int number;
+  char char_array[ARRAY_SIZE];
+  int another_number;
+} var1, var2;
+```
+* The previous example combines the declaration of two structure variables with the declaration of a structure tag named ```var```. This structure tag can be used later in the program to declare more structure variables of type ```struct var```.
+* All structure variables declared using the same structure tag are compatible.
+
+### :small_blue_diamond: Defining A Structure Type
+
+* C allows us to declare a type name for a "class" of structures.
+```c
+typedef struct {
+  int number;
+  char char_array[ARRAY_SIZE];
+  int another_number;
+} var;
+```
+* In the previous example, ```var``` is a type name for structures that have the same three members discussed previously.
+* The type name should appear at the end of the declaration unlike structure tags which appear at the beginning after the ```struct``` keyword.
+* Structure types declared in this fashion are used in much the same way as any of C's built-in types.
+   * We can declare structure variables using the ```var``` type as follows: ```var var1, var2;```.
+   * Unlike a structure tag, ```var``` is a type name and can't be preceded by the keyword ```struct```.
+* All structure variables declared using the same structure type are compatible.
+
+### :small_blue_diamond: Structures As Arguments And Return Values
+
+* C allows using structures as arguments and return values when working with functions.
+* A structure can be passed as an argument to a function using a structure tag or a structure type depending on how it was declared.
+   * Structure tag: ```void dummy_function(struct var var1)```.
+   * Structure type: ```void dummy_function(var var1)```.
+* Similarly, a structure can be returned from a function using a structure tag or a structure type depending on how it was declared.
+   * Structure tag: ```struct var dummy_function(void)```.
+   * Structure type: ```var dummy_function(void)```.
+* Although it's perfectly legal to pass a structure by value in C, it's usually not a good idea.
+   * Passing a structure by value requires copying all members of the structure while creating the function's stack frame.
+   * This might not be an issue if the structure is not very sizeable, but it certainly imposes a fair amount of overhead that degrades the program's performance the larger it gets.
+   * Returning a structure from a function involves a similar amount of overhead.
+   * C programmers usually prefer to use pointers to structures when passing arguments, or returning from functions.
+* A structure variable declared inside a function is allowed to be initialized with two important caveats:
+   * If the structure variable has static storage duration, its initializer needs to contain constant values.
+   * If the structure variable has automatic storage duration, its initializer can be anything, including another compatible structure variable.
+* C99 introduces a new feature that's common to both structures and arrays: "Compound literals".
+   * A compound literal can be used to create arrays without having to declare them first, usually to be able to pass them as arguments to functions.
+   * A compound literal can serve the same purpose when used with structures.
+   * A compound literal can also be used to return a structure from a function or to assign one to a structure variable.
+   ```c
+   // Compound literal using a structure tag
+   struct var var1 = (struct var) {5, "dummy_var1", 10};
+
+   // Compound literal using a structure type
+   var var2 = (var) {3, "dummy_var2", 6};
+   ```
+   * Using a compound literal to assign values to the members of a structure variable should not be seen as an initialization. Initializers can only appear in declarations which are distinct from statements in C grammar.
+   * Compound literals follow a general formal pattern: A type name enclosed in parentheses followed by a set of values enclosed in braces.
+   * When used with structures, compound literals can use designators like in designated initializers.
+   ```c
+   struct var var1 = (struct var) {.number = 5, .char_array = "dummy_var1", .another_number = 10};
+   ```
+   * If the compound literal fails to assign a value to any of the structure variable's members, it will be assigned zero by default.
 
 ## :nesting_dolls: Nested Arrays And Structures
 
