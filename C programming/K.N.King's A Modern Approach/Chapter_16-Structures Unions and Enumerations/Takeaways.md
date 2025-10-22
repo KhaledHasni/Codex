@@ -92,7 +92,7 @@ struct {
       } var1 = {.number = 5, "dummy_var1", .another_number = 10};
       ```
       * In this example, ```"dummy_var1"``` doesn't have a designator so the compiler assumes it corresponds to the next member after ```number```.
-* To access a structure member, C provides the ```.``` operator.
+* To access a structure member, C provides the ```.``` operator, also known as "member selection".
    * ```var1.number``` for example, accesses the ```number``` member of the ```var1``` structure variable.
    * The ```.``` operator has the same precedence as the postfix increment ```++``` and decrement ```--``` operators.
       * Since the postfix increment and decrement operators have one of the highest precedence levels in C, the ```.``` operator takes precedence over almost all other C operators.
@@ -217,6 +217,81 @@ typedef struct {
    * If the compound literal fails to assign a value to any of the structure variable's members, it will be assigned zero by default.
 
 ## :nesting_dolls: Nested Arrays And Structures
+
+* C allows nesting arrays in structures, structures in arrays and structures in other structures.
+
+### :small_blue_diamond: Nested Structures
+
+* A structure can be nested inside another structure of a different type.
+```c
+// Name structure declaration
+struct name {
+  char first_name[MAX_NAME + 1];
+  char last_name[MAX_NAME + 1];
+};
+
+// Employee structure declaration
+struct employee {
+   struct name employee_name;
+   int age;
+   char gender;
+} employee1, employee2;
+```
+* In the previous example, accessing the ```first_name``` member of the ```name``` member of the ```employee``` structure requires the use of the dot operator ```.``` twice.
+* Using nested structures in this manner is a way of treating semantically related information as a data unit.
+   * This helps reduce the number of data abstraction layers.
+   * This also reduces the number of dot operators ```.``` required to access data.
+
+### :small_blue_diamond: Arrays Of Structures
+
+* Arrays of structures are one of the most common combinations of arrays and structures used in C.
+* Accessing a structure stored in an array is done through array subscripting.
+* Accessing a member of a structure stored in an array is done through a combination of array subscripting and member selection.
+* Assuming the structures stored in the array contain an array themselves, accessing an element in that array requires subscripting, followed by member selection, followed by another subscripting operation.
+```c
+// var structure declaration
+struct var {
+   int number;
+   char char_array[ARRAY_SIZE];
+   int another_number;
+};
+
+// declaration of an array of structures
+struct var var_array[100];
+
+struct var var1 = var_array[0];      // array subscripting to access the first structure in the array.
+int i = var_array[0].number;         // array subscripting + member selection to access the "number" member in the first structure in the array.
+char c = var_array[0].char_array[0]; // array subscripting + member selection + array subscripting to access the first character in "char_array"
+                                     // as a member of the first structure of the array.
+```
+
+### :small_blue_diamond: Initializing An Array Of Structures
+
+* Initializing an array of structures in C is done by simply providing a list of comma-separated, brace-enclosed sets of initial values for each member of each structure element in the array, and wrapping the list in an extra set of braces to provide the array initializer.
+* In most cases, an array of structures in C is used as a database or a lookup table containing information that shouldn't be changed.
+```c
+// person struct declaration
+struct person {
+   char *name;
+   int age;
+};
+
+// declaration of an array of structures
+const struct person list_of_employees[] = {{"Alice", 21}, {"Bob", 25}, {"Eve", 30}};
+```
+* In the previous example, the ```name``` structure member was declared as a pointer.
+   * This would not have worked had we been planning to use ```person``` structure instances as variables.
+   * Since ```person``` structures are only being initialized with constant values, using a pointer is not an issue.
+   * When a ```person``` structure is initialized, its ```name``` member points to an immutable string literal.
+* The inner braces used to initialize each structure in the array initializer are not mandatory.
+* C99's designated initializers can be used to initialize structures within arrays.
+```c
+struct var var_array[100] = {[0].number = 5, [0].another_number = 6, [0].char_array[0] = '\0'};
+```
+* C99 allows one item in a designated initializer to have more than one designator.
+   * The first item in the previous example has two designators: one to access the first element in the array (the ```0``` subscript), and one to access the ```number``` member in the first structure.
+   * The third item in the previous example has three designators: one to access the first element in the array, one to access the ```char_array``` member in the structure, and one to access the first character in that character array.
+   * Only the first structure in the array is being initialized in the previous example. The rest of the structures are initialized to zero by default.
 
 ## :balance_scale: Unions
 
