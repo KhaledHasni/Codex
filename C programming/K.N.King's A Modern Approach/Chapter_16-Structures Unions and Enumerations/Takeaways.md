@@ -416,4 +416,113 @@ typedef union {
 
 ## :1234: Enumerations
 
+* In some cases, a variable in a C program may have only a small set of possible values.
+   * Boolean variables are a good example, since they only have two possible values.
+   * This can be achieved using an integer variable with different numeric codes representing the different possible values.
+      * Using an integer variable for this purpose has two major deficiencies.
+         * It scatters "magic" values, whose meaning isn't immediately apparent, all over the code.
+         * It gives no indication that the variable has a limited pool of possible values.
+      * These deficiencies can be overcome by implementing a couple of techniques.
+         * Creating a macro to define a meaningful name for ```int```.
+         * Creating macros for the different possible values that the variable can store.
+         ```c
+         // create macros for int and all values in the possible value set
+         #define COLOR int
+         #define RED    0
+         #define BLUE   1
+         #define YELLOW 2
+         #define GREEN  3
+
+         // declare and initialize a "color" variable
+         COLOR dummy_color = BLUE;
+         ```
+      * This technique still has some major deficiencies.
+         * The macros don't make it obvious that they represent values of the same data type.
+         * The macros will have been expanded by the time the program is being processed by a debugger.
+         * If there's more than a few possible values, defining a macro for each will be time-consuming.
+* C provides a kind of type that can be used with variables that have a small set of possible values. It's called an "enumerated type".
+   * The possible values of an enumerated type should be enumerated by the programmer.
+   * The programmer must manually create an "enumeration constant", also known as an enumerator, to represent each of the possible values.
+   ```c
+   // declare two variables of an enumerated type
+   enum {
+     RED,
+     BLUE,
+     YELLOW,
+     GREEN
+   } color1, color2;
+   ```
+* Enumerations in C have very little in common with structures and unions. That being said, their declaration syntax is strikingly similar.
+* Unlike structures and unions that create a separate name space for their members, enumeration constants must be distinct from names of identifiers in the enclosing scope.
+* Enumeration constants are subject to C's scope rules.
+   * If an enumeration is declared inside a function, its constants can only be seen inside that function.
+* An enumeration can be assigned a name using either an enumeration tag or an enumeration ```typedef``` name.
+   * Enumeration tags are very similar to structure and union tags.
+   ```c
+   // declare an enumeration tag
+   enum color {
+     RED,
+     BLUE,
+     YELLOW,
+     GREEN
+   };
+
+   // declare and initialize an enumeration variable using the declared tag
+   enum color dummy_color = RED;
+   ```
+   * We can use ```typedef``` to make a genuine type name out of ```color```.
+   ```c
+   // define an enumeration type name
+   typedef enum {
+     RED,
+     BLUE,
+     YELLOW,
+     GREEN
+   } color;
+
+   // declare and initialize an enumeration variable
+   color dummy_color = BLUE;
+   ```
+* Enumeration variables and their enumerators are just integer variables and integer values in disguise.
+   * When an enumeration is declared, C assigns the values ```0```, ```1```, ```2``` and so on to its enumeration constants.
+   * C allows the programmer to override the default values assigned to the different enumeration constants.
+      * The values assigned can be any random set of integer values and don't have to be in any particular order.
+      * It's perfectly legal to assign the same integer value to more than one enumeration constant.
+      * If the programmer fails to assign a value to an enumeration constant, its value is one greater than the value of the previous enumerator.
+   ```c
+   // enumeration with default values
+   enum color {
+     RED,    // has the value 0
+     BLUE,   // has the value 1
+     YELLOW, // has the value 2
+     GREEN   // has the value 3
+   };
+
+   // enumeration with assigned values for all constants
+   enum color {
+     RED    = 1, // has the value 1
+     BLUE   = 2, // has the value 2
+     YELLOW = 3, // has the value 3
+     GREEN  = 4  // has the value 4
+   };
+
+   // enumeration with arbitrary scrambled values
+   enum color {
+     RED = 23,  // has the value 23
+     BLUE = 12, // has the value 12
+     YELLOW,    // has the value 13 (one greater than previous value)
+     GREEN = 87 // has the value 87
+   };
+   ```
+* C allows using enumeration variables and constants anywhere integer variables and integer values are respectively expected.
+   * An enumeration variable can be assigned an integer value.
+   * An enumeration variable can be used as the operand to C's arithmetic and increment/decrement operators.
+   * An integer variable can be assigned an enumeration constant.
+   * No type casting is needed in any of these cases.
+   * The compiler treats an enumeration variable as a variable of some integer type, with its enumerators being aliases for its possible values.
+* Enumeration variables are often used to create tag fields in structures that have an embedded union.
+   * Recall that a tag field is used in such structures to track the union member that currently contains a meaningful value.
+   * We have previously used an integer variable for this purpose.
+   * An enumeration variable is more suited to play this role since it has a limited number of possible values that can match the number of union members.
+
 ## :game_die: Miscellaneous
