@@ -295,6 +295,125 @@ struct var var_array[100] = {[0].number = 5, [0].another_number = 6, [0].char_ar
 
 ## :balance_scale: Unions
 
+* A union is another one of C's built-in data structures, that much like structures, can contain one or more members.
+* Unlike a structure, when the compiler encounters a union, it does not allocate space for each of its members.
+   * The compiler allocates only enough space for the largest member of the union.
+   * All union members will have to share that storage space, and overlay on top of each other as a result.
+   * Changing one union member will alter the values of all other members.
+   * The members of a structure are all stored at different memory addresses. On the other hand, the members of a union all have the same address in memory.
+* Union declarations in C are very similar to structure declarations.
+```c
+// one-off union variable declaration
+union {
+  int i;
+  double d;
+} u0;
+
+// union tag and union variable declaration
+union dummy_union{
+  int i;
+  double d;
+} u1;
+
+// union type and union variable declaration
+typedef union {
+  int i;
+  double d;
+} u2;
+```
+* Accessing union members can be done using the same "member selection" operator ```.``` used for accessing structure members.
+   * ```u0.i = 2;``` assigns ```2``` to the ```i``` member of the ```u0``` union.
+   * ```u0.d = 2.5;``` assigns ```2.5``` to the ```d``` member of the ```u0``` union.
+* Assigning a value to a union member immediately alters values stored in all other members. For this reason, a union is a data structure that groups members of potentially different types, only one of which may have a meaningful value stored in memory at any point in a program's lifetime.
+* Unions and structures in C share a lot of properties.
+   * They can both be declared using tags and types.
+   * They can both be passed to functions as arguments.
+   * They can both be returned from functions.
+   * They can both be copied using the ```=``` operator.
+* A union can be initialized at the time of its declaration.
+   * A union's initializer has a caveat: Only the first member of the union can be initialized.
+   ```c
+   union {
+     int i;
+     double d;
+   } u = {0};
+   ```
+   * The braces enclosing the initializer are required.
+   * The initializer must be a constant expression, although this rule is slightly alleviated in C99.
+   * C99's designated initializers can be used with unions.
+      * A designated initializer allows us to specify which member of the union is to be initialized.
+      * Only one union member can be initialized using designated initializers, but it doesn't have to be the first member.
+   ```c
+   union {
+     int i;
+     double d;
+   } u = {.d = 2.5};
+   ```
+* C does not enforce any restrictions on the type of a union member. It can be a structure, an array or even another union.
+* When a value is assigned to a union member, all other members are undefined.
+   * Consequently, it's usually best to avoid accessing data stored in a union through an undefined member.
+   * The C standard has one exception to that rule.
+      * If two or more members of the union are structures.
+      * The structures embedded in the union begin with one or more matching members.
+      * Matching members are members that appear in the same order and have compatible types.
+      * In this case, if one of the structures is currently valid, its matching members in the other structures are also valid.
+* Unions can be used to save space that would otherwise be wasted if structures are used.
+* Unions can also be used to create data structures of mixed types.
+   * Arrays are a good example of a C data structure whose elements must be of the same type.
+   * C programmers sometimes use unions to work around this limitation.
+   ```c
+   // union type declaration
+   typedef union {
+     int i;
+     double d;
+   } entry;
+
+   // mixed type array declaration
+   entry dummy_array[100];
+
+   // store values of different types in the array
+   dummy_array[0].i = 5;
+   dummy_array[1].d = 2.3;
+   ```
+   * In the previous example, each element of the array is an ```entry``` union that can store either an integer or a double value.
+* Unions in C have an inherent shortcoming. Since only one union member can have a meaningful value at a given point in time, there's no easy way to tell which member it is.
+   * To work around this problem, C programmers habitually embed their unions in structures that contain an extra "tag field" also known as a "discriminant".
+   * This tag field is used to keep track of the union member that currently has a meaningful value.
+   ```c
+   #define INT 0
+   #define DOUBLE 1
+
+   // union embedded in a structure with a tag field
+   typedef struct {
+     int discriminant; // tag field
+     union {
+       int i;
+       double d;
+     } entry;
+   } regulated_entry;
+   ```
+   * Each time a union member is modified, the tag field should also be changed to track the union's meaningful member.
+   ```c
+   regulated_entry s;
+
+   // entry's i member is assigned a value
+   s.entry.i = 5;
+   s.discriminant = INT;
+
+   // entry's d member is assigned a value
+   s.entry.d = 5.2;
+   s.discriminant = DOUBLE;
+   ```
+   * Retrieving the value stored in a union variable can take advantage of the tag field to determine the union member to access.
+   ```c
+   // print value stored in union
+   if(s.discriminant == INT)
+     printf("%d", s.entry.i);
+   else
+     printf("%g", s.entry.d);
+   ```
+   * It's important to keep in mind that it's the program's responsibility to update the tag field every time a value is assigned to one of the union's members.
+
 ## :1234: Enumerations
 
 ## :game_die: Miscellaneous
