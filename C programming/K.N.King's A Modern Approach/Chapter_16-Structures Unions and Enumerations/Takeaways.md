@@ -526,3 +526,61 @@ typedef union {
    * An enumeration variable is more suited to play this role since it has a limited number of possible values that can match the number of union members.
 
 ## :game_die: Miscellaneous
+
+* Some platforms require the address of certain data types to be a multiple of some integer that's typically either ```2```, ```4``` or ```8``` depending on the type.
+   * In this case, it's not unusual for the compiler to insert holes or padding bytes when storing the members of a structure in memory.
+   * These paddings are added to align structure members with their required memory boundaries.
+   * In the following structure variable declaration: ```struct {char a; int i;} s;```:
+      * If we assume ```char``` and ```int``` variables require ```1``` and ```4``` bytes of memory respectively, and all data items are required to be stored at multiple of ```4``` addresses on the current platform:
+         * ```a``` will be followed by three padding bytes, then followed by ```i```.
+   * Padding bytes can appear between structure members, as well as at the end of a structure.
+   * The size of a structure produced by the ```sizeof``` operator is the sum of all of its members' sizes, added to the cumulative size of its padding blocks.
+* The C standard explicitly states that padding bytes can only be inserted between structure members or at the end of a structure, but definitely not at the beginning.
+   * Consequently, a pointer to a structure will always be the same as a pointer to its first element, although they won't have the same type.
+* A C structure cannot contain an instance of itself.
+   * When the compiler encounters a structure variable declaration, it needs to know its total size to be able to allocate storage for it.
+   * If a structure variable contains an instance of itself, this will create an infinite recursion and the compiler won't be able to compute the structure's total size.
+   * A structure can contain a pointer to an instance of itself though.
+* Structures in C can't be compared using the equality operator ```==```.
+   * The creators of the C programming language decided against this operation to be allowed on structures as it goes against the language's entire philosophy.
+      * If structure comparison would happen on a member per member basis, that would be too inefficient.
+      * If structure comparison would happen on a byte per byte basis, padding bytes might cause an issue because of leftover data.
+      * The issue with padding bytes can be mitigated by making sure all padding bytes are zeroed. This, however, will impose a performance penalty
+      on all programs that use structures.
+* In the old days of C, structure tags used to be the only way to declare structure variables back when the language lacked ```typedef```.
+   * Once ```typedef``` was introduced, far too much C code was already written and tags could no longer be scrapped.
+   * The result is two ways of declaring structure variables that a programmer can choose from.
+   * Structure tags are still necessary for structures that contain a member pointing to a structure of the same type.
+* A structure is allowed to have both a tag and a ```typedef``` name. The two can even be the same.
+```c
+typedef struct var {
+  int number;
+  char char_array[ARRAY_SIZE];
+  int another_number;
+} var;
+```
+* C programmers will usually declare structure tags or types in header files so they can be used in multiple source files.
+   * In this case, these header files should be wrapped in include guards to protect against multiple inclusion, since the compiler forbids more than one declaration of the same type or tag in the same file.
+   * Unions and enumerations are subject to these same rules.
+* Assuming a structure tag or type is declared and included in two different source files:
+   * If two structure variables are declared, one in each of the two files, they won't have the same type.
+   * The C standard states that they will have compatible types instead.
+   * Objects of compatible types can be assigned to each other using the simple assignment operator ```=```.
+* In C89, two structures declared in different translation units are compatible if:
+   * Their members have the same names.
+   * Their members are declared in the same order.
+   * Their corresponding members have compatible types.
+   * The same applies for unions and enumerations.
+* In C99, an extra condition is required for two structures declared in different translation units to be compatible:
+   * They must both have the same tag or neither has a tag.
+   * The same applies for unions and enumerations.
+* C allows creating pointers to compound literals.
+```c
+struct var *var1 = &(struct var) {.number = 5, .char_array = "dummy_var1", .another_number = 10};
+```
+* Compound literals in C are modifiable lvalues.
+* C99 allows the final enumerator in an enumeration to be followed by a trailing comma.
+   * Some pre-C99 compilers accepted this as well.
+   * C89 allows trailing commas for initializers but not for enumerations.
+   * C99 also allows trailing commas for compound literals.
+* Enumeration constants can be used as array subscripts or designators in designated initializers in C99.
