@@ -123,13 +123,142 @@ char dummy_string[MAX_LENGTH + 1];
    // pointer to character and string variable declaration
    char *ptr, dummy_string[MAX_LENGTH + 1];
 
-   // ptr now points to the first character in the dummy_string string variable, and can be used as a modifiable string
+   // ptr now points to the first character in the dummy_string string variable, and can be used as a modifiable
+   // string
    ptr = dummy_string;
    ```
    * Pointers can also be made to point to dynamically allocated strings.
    * It's crucial not to use an uninitialized pointer as a string.
 
 ## :keyboard: Reading And Writing Strings
+
+* Reading and writing strings are common especially in menu-driven C programs.
+* Writing a string in C can be done using either the ```printf``` or the ```puts``` function.
+* Reading a string in C can be a bit tricky, since the programmer will have to be careful not to read more characters beyond the size of the destination string variable.
+   * A string can be read in a one go using the ```scanf``` or the ```gets``` function.
+   * A string can also be read one character at a time.
+
+### :small_blue_diamond: Writing A String Using printf And puts
+
+* ```printf``` is often used in conjunction with the ```%s``` conversion specification to write strings.
+```c
+// string variable declaration
+char str[] = "Learning C becomes more worth it the deeper you get into it";
+
+// printf call to write string
+printf("%s\n", str);
+```
+* In the previous example, the ```printf``` call will produce ```Learning C becomes more worth it the deeper you get into it```.
+* ```printf``` writes a string starting from the first character, until it reaches the first null character.
+* ```printf``` can be used to format a string in different ways.
+   * When used with the ```%.ps``` conversion specification, ```printf``` will display the first ```p``` characters of the string.
+   * When used with the ```%ms``` conversion specification, ```printf``` will display the string in a field of size ```m```.
+      * If the string is longer than the field width ```m```, it will not be truncated.
+      * If the string is shorter than the field width ```m```, it will be right justified within the field.
+      * Adding a minus sign ```-``` to the immediate left of ```m``` will cause the string to be left-justified within the field.
+   * When used with the ```%m.ps``` conversion specification, ```printf``` will display the first ```p``` characters of the string in a field of size ```m```.
+* The C library provides another function that can be used to write strings: The ```puts``` function.
+* ```puts``` takes a single argument which is the string to be printed.
+* ```puts``` always inserts a new-line character at the end of the string.
+```c
+// string variable declaration
+char str[] = "Learning C becomes more worth it the deeper you get into it";
+
+// puts call to write string
+puts(str);
+```
+* Both ```printf``` and ```puts``` expect a null-terminated string.
+   * Both functions will keep advancing in memory, writing characters as they move along until they encounter the first null character.
+
+### :small_blue_diamond: Reading A String Using scanf And gets
+
+* ```scanf``` is often used in conjunction with the ```%s``` conversion specification to read strings.
+```c
+// string variable declaration
+char str[50];
+
+// scanf call to read string
+scanf("%s", str);
+```
+* In the previous example, the character array doesn't need to be preceded by the ```&``` operator when passed to ```scanf```.
+   * Array names decay to pointers when passed as arguments to functions.
+* When ```scanf``` is called to read a string:
+   * It skips all leading whitespace characters.
+      * A whitespace character is any character for which the ```isspace()``` function returns ```true```. These characters are:
+         * Space: ```' '```.
+         * Horizontal tab: ```'\t'```.
+         * Vertical tab: ```'\v'```.
+         * Newline: ```'\n'```.
+         * Carriage return: ```'\r'```.
+         * Form feed: ```'\f'```.
+   * It then reads non-whitespace characters into the destination string variable one by one.
+   * It stops reading as soon as it encounters the first whitespace character.
+   * It appends a null character to the end of the string.
+* Since ```scanf``` skips leading whitespace characters and stops at the first subsequent whitespace character, it can never read a full line of input in one go.
+* The C library provides the ```gets``` function which can be used to read an entire line of input in one go.
+* ```gets``` and ```scanf``` have some similarities:
+   * They both read characters from standard input into a destination buffer supplied to the function as an argument.
+   * They both append a null character to the end of the string they read.
+* ```gets``` and ```scanf``` have some differences:
+   * Unlike ```scanf```, ```gets``` does not skip leading whitespace characters when reading input.
+   * While ```scanf``` will stop reading at the first encounter of a whitespace character, ```gets``` stops reading when it comes across a newline character.
+      * ```gets``` does not store the newline character, the null character takes its place.
+* ```scanf``` and ```gets``` will handle reading the same input differently.
+   * Assuming the user is prompted to enter some input and this is what they provide: ```This input will be read differently by scanf and gets```.
+   * ```scanf("%s", str);```.
+      * After this call, ```str``` will contain ```This```.
+      * The next ```scanf``` call will skip over the space which is now leading the input stream, and store ```input``` in the destination buffer.
+      * This cycle will continue, with ```scanf``` reading adjacent streams of characters and stopping at the first encounter of a whitespace character.
+   * ```gets(str);```.
+      * After this call, ```str``` will contain ```This input will be read differently by scanf and gets```.
+* ```scanf``` and ```gets``` are both inherently unsafe.
+   * Both functions have no way of telling whether the destination buffer is full.
+   * They will only stop storing characters in the destination buffer when they meet their own stopping conditions (whitespace and newline characters respectively).
+   * Some C programmers like to use the ```%ms``` conversion specification with ```scanf``` to limit the number of characters to be stored to a maximum of ```m```.
+   * On the other hand, nothing can be done to mitigate the risk of using ```gets```.
+      * For this reason, most C programmers prefer not to use it, and opt for ```fgets``` instead.
+
+### :small_blue_diamond: Reading A String Character By Character
+
+* ```scanf``` and ```gets``` are inherently unsafe and don't offer much versatility and flexibility.
+* For this reason, most C programmers prefer to write their own input functions. These functions will often read input one character at a time.
+* When writing an input function, a programmer will have to consider several points:
+   * Should the input function skip leading whitespace characters or should it store them as part of the input?
+   * At what point should the function stop reading? At the first encounter of a newline character, whitespace character or maybe something else entirely?
+   * When the function does encounter the character that causes it to stop reading, does it include it in the stored string or does it discard it?
+   * If the input exceeds the amount of space allocated for the destination character buffer, does the function leave leftover characters for subsequent read calls or does it discard them?
+* The following is an example implementation of such a function:
+```c
+int read_line(char str[], int max) {
+   int ch, i = 0;
+
+   while((ch = getchar()) != '\n')
+      if(i < max)
+         str[i++] = ch;
+   str[i] = '\0';
+   return i;
+}
+```
+* Here's how the input function in the previous example works:
+   * The function takes two arguments.
+      * ```str``` is the destination character array where input will be stored.
+      * ```max``` is the maximum number of characters to be read.
+   * The function returns an integer value which represents the number of characters actually read at the end of the call.
+      * This value is contained in the ```0 - max``` range (inclusively).
+   * The heart of this function is the ```while``` statement, where ```getchar``` is called to read the next character in the input stream.
+      * ```getchar``` returns the character it reads as an integer value, which explains why ```ch``` is an ```int``` variable as opposed to ```char```.
+      * The ```while``` loop will not terminate until a newline character ```\n```is read.
+   * Inside the ```while``` loop's body, the function checks whether ```max``` characters have been read already, by comparing the current position index ```i``` inside the buffer against ```max```.
+   * If ```max``` characters have already been read, the input character will be discarded and not stored in the buffer.
+   * If there's still room in the buffer, the function stores the input character and advances the position index ```i``` inside the buffer.
+   * Once a newline character is read, the ```while``` loop terminates and the function appends a null character ```\0``` to the buffer to terminate the string.
+   * Finally, the function returns the number of characters in the buffer, represented by the current position index ```i```.
+* Based on the description of how ```read_line``` works, we can conclude the following:
+   * The function will not skip leading whitespace characters and will store them in the destination buffer.
+   * The function will stop reading at the first encounter of a newline character.
+   * Once it finds a newline character, the function will not store it in the destination buffer.
+   * Once the destination buffer is full, all leftover characters in the input stream will be discarded.
+* This function has one minor flaw: It fails to check whether ```getchar``` calls have failed, in which case it should probably terminate the read operation.
 
 ## :mag_right: Accessing The Characters In A String
 
