@@ -262,6 +262,57 @@ int read_line(char str[], int max) {
 
 ## :mag_right: Accessing The Characters In A String
 
+* The fact that C treats strings as arrays can be leveraged to access individual characters within strings using array operations.
+* Array subscripting and pointer arithmetic are particularly useful when stepping through the characters of a string.
+* The following function steps through the characters of a string and returns the position of the first occurrence of a given character.
+```c
+int find_position(const char str[], char c) {
+   int i;
+   bool found = false; // C99
+
+   for(i = 0; str[i] != '\0'; i++)
+      if(str[i] == c) {
+         found = true;
+         break;
+      }
+   return found ? i : -1;
+}
+```
+* In the previous example, the function takes two arguments: The string to step through ```const char str[]``` and the character to look for in the string ```char c```.
+* The keyword ```const``` appears in the string parameter declaration to indicate that the function does not change the data ```str``` points to.
+* If this were an ordinary array being supplied to the function, we would need to provide an extra argument indicating its length.
+   * Since this is a string, the function assumes it is null-terminated and searches for the null character instead.
+* The function can be made slightly more efficient by using pointer arithmetic to step through the string instead of array subscripting.
+```c
+int find_position(const char *str, char c) {
+   bool found = false; // C99
+   const char *p = str;
+
+   for(;*str != '\0'; str++)
+      if(*str == c) {
+         found = true;
+         break;
+      }
+   return found ? str - p : -1;
+}
+```
+* In this second version of ```find_position```, ```str``` is a local copy of the pointer argument.
+   * This means the original pointer supplied to this function is protected against change.
+
+### :small_blue_diamond: Summary
+
+* Individual characters in a string can be accessed and processed using either array subscripting or pointer arithmetic.
+   * Pointer arithmetic is usually preferred by C programmers when processing strings.
+   * Comparing both versions of ```find_position``` shows that pointer arithmetic slightly simplifies the implementation by removing the need for the index ```i```.
+   * Both techniques are valid and can even be mixed.
+* Declaring a string parameter to be an array or a pointer makes no difference.
+   * An array parameter will automatically decay to a pointer once function arguments are copied.
+   * A string parameter will be treated as a pointer inside the function regardless of how it was declared.
+   * Some C programmers choose how to declare a string parameter depending on how they plan on accessing its characters: Using an array for subscripting and a pointer for pointer arithmetic.
+* A string argument supplied to a function can be an array name, a pointer or even a string literal.
+   * The function will internally treat all of them as pointers.
+   * The function has no way of knowing the nature of the original argument.
+
 ## :books: Using The C String Library
 
 ## :sparkles: String Idioms
